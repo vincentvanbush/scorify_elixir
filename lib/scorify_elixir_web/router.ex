@@ -23,4 +23,7 @@ defmodule ScorifyElixirWeb.Router do
   # scope "/api", ScorifyElixirWeb do
   #   pipe_through :api
   # end
+
+  forward("/graphql",  Absinthe.Plug,          schema: ScorifyElixirWeb.Schema)
+  forward("/graphiql", Absinthe.Plug.GraphiQL, schema: ScorifyElixirWeb.Schema)
 end

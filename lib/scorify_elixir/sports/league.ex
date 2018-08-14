@@ -7,6 +7,8 @@ defmodule ScorifyElixir.Sports.League do
     field :name, :string
 
     belongs_to :sport, ScorifyElixir.Sports.Sport
+    has_many :league_seasons, ScorifyElixir.Sports.LeagueSeason
+    has_many :sides, through: [:league_seasons, :sides]
 
     timestamps()
   end
