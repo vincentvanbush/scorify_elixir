@@ -31,7 +31,6 @@ defmodule ScorifyElixir.Sports do
     assoc(sport, :leagues) |> Repo.all
   end
 
-  @spec list_league_sides(any()) :: Ecto.Query.t()
   def list_league_sides(league) do
     league_seasons_query = league |> assoc(:league_seasons)
     last_season_query =
@@ -41,6 +40,10 @@ defmodule ScorifyElixir.Sports do
       limit: 1
     last_season = last_season_query |> Repo.one!
     last_season |> assoc(:sides) |> Repo.all
+  end
+
+  def list_sport_sides(sport) do
+    sport |> assoc(:sides) |> Repo.all
   end
 
   def create_league(sport, attrs \\ %{}) do
