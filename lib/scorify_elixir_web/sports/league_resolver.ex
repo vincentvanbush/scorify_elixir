@@ -1,7 +1,6 @@
 defmodule ScorifyElixirWeb.Sports.LeagueResolver do
   alias ScorifyElixir.Sports
   require Ecto.Query
-  require IEx
 
   def all(%{sport_id: sport_id}, _info) do
     {:ok, Sports.list_leagues(Sports.get_sport!(sport_id)) }

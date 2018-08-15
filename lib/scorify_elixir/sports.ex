@@ -2,6 +2,8 @@ defmodule ScorifyElixir.Sports do
   alias ScorifyElixir.Repo
   alias ScorifyElixir.Sports.{Sport, League}
   import Ecto
+  require Ecto.Query
+  import Ecto.Query
 
   def list_sports do
     Sport |> Repo.all
@@ -27,6 +29,18 @@ defmodule ScorifyElixir.Sports do
 
   def list_leagues(sport) do
     assoc(sport, :leagues) |> Repo.all
+  end
+
+  @spec list_league_sides(any()) :: Ecto.Query.t()
+  def list_league_sides(league) do
+    league_seasons_query = league |> assoc(:league_seasons)
+    last_season_query =
+      from l in league_seasons_query,
+      where: l.start_date <= from_now(0, "day"),
+      order_by: [desc: :start_date],
+      limit: 1
+    last_season = last_season_query |> Repo.one!
+    last_season |> assoc(:sides) |> Repo.all
   end
 
   def create_league(sport, attrs \\ %{}) do

@@ -13,6 +13,12 @@ defmodule ScorifyElixirWeb.Schema do
       resolve(&Sports.LeagueResolver.all/2)
     end
 
+    field :sides, list_of(:side) do
+      arg(:sport_id, :id)
+      arg(:league_id, :id)
+      resolve(&Sports.SideResolver.all/2)
+    end
+
     mutation do
 
     end
