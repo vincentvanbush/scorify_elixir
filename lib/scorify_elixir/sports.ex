@@ -2,8 +2,8 @@ defmodule ScorifyElixir.Sports do
   alias ScorifyElixir.Repo
   alias ScorifyElixir.Sports.{Sport, League, Side, LeagueSeason, SideLeagueSeason}
   import Ecto
+  import Ecto.{Query, Changeset}
   require Ecto.Query
-  import Ecto.Query
 
   require IEx
 
@@ -53,15 +53,20 @@ defmodule ScorifyElixir.Sports do
   end
 
   def create_league(sport, attrs \\ %{}) do
-    sport |> build_assoc(:leagues, attrs) |> Repo.insert!
+    sport
+    |> build_assoc(:leagues, attrs)
+    |> Sport.changeset(%{})
+    |> Repo.insert!
   end
 
   def create_side(sport = %Sport{}, attrs \\ %{}) do
     sport
     |> build_assoc(:sides, attrs)
+    |> Side.changeset(%{})
     |> Repo.insert!
   end
 
+  @spec add_side_to_league(ScorifyElixir.Sports.Side.t(), [{:league, ScorifyElixir.Sports.League.t()}, ...]) :: ScorifyElixir.Sports.Side.t()
   def add_side_to_league(side = %Side{}, league: %League{} = league) do
     last_season = league |> league_last_season
     add_side_to_league_season(side, league_season: last_season)
@@ -70,9 +75,9 @@ defmodule ScorifyElixir.Sports do
   def add_side_to_league_season(side = %Side{},
                                 league_season: (%LeagueSeason{} = league_season)) do
     %SideLeagueSeason{}
-    |> Ecto.Changeset.change
-    |> Ecto.Changeset.put_assoc(:side, side)
-    |> Ecto.Changeset.put_assoc(:league_season, league_season)
+    |> change
+    |> put_assoc(:side, side)
+    |> put_assoc(:league_season, league_season)
     |> SideLeagueSeason.changeset
     |> Repo.insert!
     side
