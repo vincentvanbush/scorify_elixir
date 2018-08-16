@@ -24,7 +24,21 @@ defmodule ScorifyElixirWeb.Schema do
     end
 
     mutation do
+      @desc "Create a league in a sport"
+      field :create_league, type: :league do
+        arg :name, non_null(:string)
+        arg :sport_id, non_null(:id)
 
+        resolve(&Sports.LeagueResolver.create/2)
+      end
+
+      @desc "Create a side in a sport"
+      field :create_side, type: :side do
+        arg :name, non_null(:string)
+        arg :sport_id, non_null(:id)
+
+        resolve(&Sports.SideResolver.create/2)
+      end
     end
   end
 end

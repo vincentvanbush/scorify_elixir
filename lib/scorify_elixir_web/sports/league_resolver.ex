@@ -10,6 +10,11 @@ defmodule ScorifyElixirWeb.Sports.LeagueResolver do
     {:ok, Sports.get_league!(id)}
   end
 
+  def create(%{name: name, sport_id: sport_id}, _info) do
+    sport = Sports.get_sport!(sport_id)
+    {:ok, Sports.create_league(sport, %{name: name})}
+  end
+
   def current_sides(sides_query, _args, _context) do
     Ecto.Query.from(s in sides_query,
                     where: fragment(

@@ -16,7 +16,7 @@ defmodule ScorifyElixir.Sports.League do
   @doc false
   def changeset(league, attrs) do
     league
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :sport_id])
+    |> validate_required([:name, :sport_id])
   end
 end

@@ -55,7 +55,7 @@ defmodule ScorifyElixir.Sports do
   def create_league(sport, attrs \\ %{}) do
     sport
     |> build_assoc(:leagues, attrs)
-    |> Sport.changeset(%{})
+    |> League.changeset(%{})
     |> Repo.insert!
   end
 
