@@ -38,6 +38,10 @@ defmodule ScorifyElixir.Sports do
     last_season |> assoc(:sides) |> Repo.all
   end
 
+  def get_side!(id) do
+    Side |> Repo.get!(id)
+  end
+
   def league_last_season(league = %League{}) do
     league_seasons_query = league |> assoc(:league_seasons)
     last_season_query =

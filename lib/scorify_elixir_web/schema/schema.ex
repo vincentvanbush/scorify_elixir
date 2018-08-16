@@ -1,5 +1,7 @@
 defmodule ScorifyElixirWeb.Schema do
+  require IEx
   use Absinthe.Schema
+  Absinthe.Resolution
   import_types(ScorifyElixirWeb.Schema.Types)
   alias ScorifyElixirWeb.Sports
 
@@ -29,7 +31,21 @@ defmodule ScorifyElixirWeb.Schema do
         arg :name, non_null(:string)
         arg :sport_id, non_null(:id)
 
-        resolve(&Sports.LeagueResolver.create/2)
+        middleware(&Sports.SportResolver.set_parent_sport/2)
+
+        resolve(&Sports.LeagueResolver.create/3)
+      end
+
+      @desc "Create a league season"
+      field :create_league_season, type: :league_season do
+        arg :league_id, non_null(:id)
+        arg :name, :string
+        arg :start_date, non_null(:string)
+        arg :end_date, non_null(:string)
+
+        middleware(&Sports.LeagueResolver.set_parent_league/2)
+
+        resolve(&Sports.LeagueSeasonResolver.create/3)
       end
 
       @desc "Create a side in a sport"
@@ -37,7 +53,20 @@ defmodule ScorifyElixirWeb.Schema do
         arg :name, non_null(:string)
         arg :sport_id, non_null(:id)
 
-        resolve(&Sports.SideResolver.create/2)
+        middleware(&Sports.SportResolver.set_parent_sport/2)
+
+        resolve(&Sports.SideResolver.create/3)
+      end
+
+      @desc "Add a side to a league"
+      field :add_side_to_league, type: :league do
+        arg :side_id, non_null(:id)
+        arg :league_id, non_null(:id)
+        arg :league_season_id, :id
+
+        middleware(&Sports.SideResolver.set_parent_side/2)
+
+        resolve(&Sports.SideResolver.add_to_league/3)
       end
     end
   end
