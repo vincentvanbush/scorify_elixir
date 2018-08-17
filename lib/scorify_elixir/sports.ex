@@ -10,7 +10,7 @@ defmodule ScorifyElixir.Sports do
   end
 
   def get_sport(id) do
-    Sport |> Repo.get!(id)
+    Sport |> Repo.get(id)
   end
 
   def create_sport(attrs \\ %{}) do
