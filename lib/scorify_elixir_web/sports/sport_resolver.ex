@@ -6,7 +6,7 @@ defmodule ScorifyElixirWeb.Sports.SportResolver do
   end
 
   def find(%{id: id}, _info) do
-    {:ok, Sports.get_sport!(id)}
+    {:ok, Sports.get_sport(id)}
   end
 
   @doc """
@@ -14,7 +14,7 @@ defmodule ScorifyElixirWeb.Sports.SportResolver do
   seen as a parent by a resolver function.
   """
   def set_parent_sport(resolution = %{arguments: %{sport_id: sport_id}}, _) do
-    sport = Sports.get_sport!(sport_id)
+    sport = Sports.get_sport(sport_id)
     resolution |> Map.put(:source, sport)
   end
 end

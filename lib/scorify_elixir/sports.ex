@@ -9,18 +9,18 @@ defmodule ScorifyElixir.Sports do
     Sport |> Repo.all
   end
 
-  def get_sport!(id) do
+  def get_sport(id) do
     Sport |> Repo.get!(id)
   end
 
   def create_sport(attrs \\ %{}) do
     %Sport{}
     |> Sport.changeset(attrs)
-    |> Repo.insert!()
+    |> Repo.insert
   end
 
-  def get_league!(id) do
-    League |> Repo.get!(id)
+  def get_league(id) do
+    League |> Repo.get(id)
   end
 
   def list_leagues do
@@ -43,8 +43,8 @@ defmodule ScorifyElixir.Sports do
     end
   end
 
-  def get_side!(id) do
-    Side |> Repo.get!(id)
+  def get_side(id) do
+    Side |> Repo.get(id)
   end
 
   def league_last_season(league = %League{}) do
@@ -76,14 +76,15 @@ defmodule ScorifyElixir.Sports do
     sport
     |> build_assoc(:leagues, attrs)
     |> League.changeset(%{})
-    |> Repo.insert!
+    |> Repo.insert
   end
 
+  @spec create_side(ScorifyElixir.Sports.Sport.t(), [{atom(), any()}, ...] | map()) :: any()
   def create_side(sport = %Sport{}, attrs \\ %{}) do
     sport
     |> build_assoc(:sides, attrs)
     |> Side.changeset(%{})
-    |> Repo.insert!
+    |> Repo.insert
   end
 
   @spec add_side_to_league(ScorifyElixir.Sports.Side.t(), [{:league, ScorifyElixir.Sports.League.t()}, ...]) :: ScorifyElixir.Sports.Side.t()
@@ -99,8 +100,7 @@ defmodule ScorifyElixir.Sports do
     |> put_assoc(:side, side)
     |> put_assoc(:league_season, league_season)
     |> SideLeagueSeason.changeset
-    |> Repo.insert!
-    side
+    |> Repo.insert
   end
 
   def create_league_season(league, attrs = %{}) do
@@ -108,6 +108,6 @@ defmodule ScorifyElixir.Sports do
       league
       |> build_assoc(:league_seasons)
       |> LeagueSeason.changeset(attrs)
-    season |> Repo.insert!
+    season |> Repo.insert
   end
 end

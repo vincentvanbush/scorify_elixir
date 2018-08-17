@@ -2,6 +2,8 @@ defmodule ScorifyElixirWeb.Schema.Types do
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: ScorifyElixir.Repo
 
+  import ScorifyElixirWeb.SafeResolver
+
   alias ScorifyElixirWeb.Sports
 
   object :sport do
@@ -31,7 +33,7 @@ defmodule ScorifyElixirWeb.Schema.Types do
     field(:league_seasons, list_of(:league_season), resolve: assoc(:league_seasons))
 
     field(:leagues, list_of(:league)) do
-      resolve &Sports.LeagueResolver.side_leagues/3
+      resolve safely &Sports.LeagueResolver.side_leagues/3
     end
   end
 

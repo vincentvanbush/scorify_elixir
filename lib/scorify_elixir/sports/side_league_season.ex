@@ -14,5 +14,6 @@ defmodule ScorifyElixir.Sports.SideLeagueSeason do
     side
     |> cast(attrs, [:side_id, :league_season_id])
     |> validate_required([:side, :league_season])
+    |> unique_constraint(:name, name: :sides_league_seasons_side_id_league_season_id_index)
   end
 end

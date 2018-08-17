@@ -3,6 +3,6 @@ defmodule ScorifyElixirWeb.Sports.LeagueSeasonResolver do
   require Ecto.Query
 
   def create(league, attrs = %{}, _info) do
-    {:ok, league |> create_league_season(attrs)}
+    league |> create_league_season(attrs)
   end
 end

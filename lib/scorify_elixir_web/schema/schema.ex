@@ -3,30 +3,31 @@ defmodule ScorifyElixirWeb.Schema do
   Absinthe.Resolution
   import_types(ScorifyElixirWeb.Schema.Types)
   alias ScorifyElixirWeb.Sports
+  import ScorifyElixirWeb.SafeResolver
 
   query do
     field :sport, :sport do
       arg(:id, non_null(:id))
-      resolve(&Sports.SportResolver.find/2)
+      resolve safely(&Sports.SportResolver.find/2)
     end
 
     field :sports, list_of(:sport) do
-      resolve(&Sports.SportResolver.all/2)
+      resolve safely(&Sports.SportResolver.all/2)
     end
 
     field :league, :league do
       arg(:id, non_null(:id))
-      resolve(&Sports.LeagueResolver.find/2)
+      resolve safely(&Sports.LeagueResolver.find/2)
     end
 
     field :leagues, list_of(:league) do
       arg(:sport_id, non_null(:id))
-      resolve(&Sports.LeagueResolver.all/2)
+      resolve safely(&Sports.LeagueResolver.all/2)
     end
 
     field :side, :side do
       arg(:id, non_null(:id))
-      resolve(&Sports.SideResolver.find/2)
+      resolve safely(&Sports.SideResolver.find/2)
     end
 
     mutation do
@@ -37,7 +38,7 @@ defmodule ScorifyElixirWeb.Schema do
 
         middleware(&Sports.SportResolver.set_parent_sport/2)
 
-        resolve(&Sports.LeagueResolver.create/3)
+        resolve safely(&Sports.LeagueResolver.create/3)
       end
 
       @desc "Create a league season"
@@ -49,7 +50,7 @@ defmodule ScorifyElixirWeb.Schema do
 
         middleware(&Sports.LeagueResolver.set_parent_league/2)
 
-        resolve(&Sports.LeagueSeasonResolver.create/3)
+        resolve safely(&Sports.LeagueSeasonResolver.create/3)
       end
 
       @desc "Create a side in a sport"
@@ -59,7 +60,7 @@ defmodule ScorifyElixirWeb.Schema do
 
         middleware(&Sports.SportResolver.set_parent_sport/2)
 
-        resolve(&Sports.SideResolver.create/3)
+        resolve safely(&Sports.SideResolver.create/3)
       end
 
       @desc "Add a side to a league"
@@ -70,7 +71,7 @@ defmodule ScorifyElixirWeb.Schema do
 
         middleware(&Sports.SideResolver.set_parent_side/2)
 
-        resolve(&Sports.SideResolver.add_to_league/3)
+        resolve safely(&Sports.SideResolver.add_to_league/3)
       end
     end
   end

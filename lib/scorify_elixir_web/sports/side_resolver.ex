@@ -12,16 +12,20 @@ defmodule ScorifyElixirWeb.Sports.SideResolver do
   end
 
   def find(%{id: id}, _) do
-    {:ok, get_side!(id)}
+    {:ok, get_side(id)}
   end
 
   def create(sport, attrs = %{}, _info) do
-    {:ok, sport |> create_side(attrs)}
+    sport |> create_side(attrs)
   end
 
   def add_to_league(side, %{league_id: league_id}, _info) do
-    league = get_league!(league_id)
-    {:ok, side |> add_side_to_league(league: league)}
+    league = get_league(league_id)
+    {status, result} = side |> add_side_to_league(league: league)
+    case status do
+      :ok -> {:ok, side}
+      :error -> {:error, result}
+    end
   end
 
   @doc """
@@ -29,7 +33,7 @@ defmodule ScorifyElixirWeb.Sports.SideResolver do
   seen as a parent by a resolver function.
   """
   def set_parent_side(resolution = %{arguments: %{side_id: side_id}}, _) do
-    side = get_side!(side_id)
+    side = get_side(side_id)
     resolution |> Map.put(:source, side)
   end
 end

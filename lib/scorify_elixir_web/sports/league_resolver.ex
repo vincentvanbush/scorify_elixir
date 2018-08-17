@@ -3,15 +3,15 @@ defmodule ScorifyElixirWeb.Sports.LeagueResolver do
   require Ecto.Query
 
   def all(%{sport_id: sport_id}, _info) do
-    {:ok, Sports.list_leagues(Sports.get_sport!(sport_id)) }
+    {:ok, Sports.list_leagues(Sports.get_sport(sport_id)) }
   end
 
   def find(%{id: id}, _info) do
-    {:ok, Sports.get_league!(id)}
+    {:ok, Sports.get_league(id)}
   end
 
   def create(sport, attrs = %{}, _info) do
-    {:ok, Sports.create_league(sport, attrs)}
+    Sports.create_league(sport, attrs)
   end
 
   def side_leagues(side, _attrs, _info) do
@@ -30,7 +30,7 @@ defmodule ScorifyElixirWeb.Sports.LeagueResolver do
   seen as a parent by a resolver function.
   """
   def set_parent_league(resolution = %{arguments: %{league_id: league_id}}, _) do
-    league = Sports.get_league!(league_id)
+    league = Sports.get_league(league_id)
     resolution |> Map.put(:source, league)
   end
 end
