@@ -24,7 +24,7 @@ defmodule ScorifyElixir.Sports.SportTest do
   end
 
   test "changeset with already existing name" do
-    %Sport{} |> Sport.changeset(@valid_attrs) |> Repo.insert!
-    assert {:error, _} = %Sport{} |> Sport.changeset(@valid_attrs) |> Repo.insert
+    %Sport{} |> Sport.changeset(@valid_attrs) |> Repo.insert!()
+    assert {:error, _} = %Sport{} |> Sport.changeset(@valid_attrs) |> Repo.insert()
   end
 end

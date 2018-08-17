@@ -1,6 +1,4 @@
 defmodule ScorifyElixir.Sports.LeagueTest do
-  require IEx
-
   use ScorifyElixir.DataCase
 
   alias ScorifyElixir.Sports.{Sport, League, LeagueSeason}
@@ -11,18 +9,15 @@ defmodule ScorifyElixir.Sports.LeagueTest do
   @attrs_without_name %{sport_id: 1}
 
   setup do
-    create_league =
-      fn (attrs = %{}) ->
-        %League{} |> League.changeset(attrs) |> Repo.insert
-      end
+    create_league = fn attrs = %{} ->
+      %League{} |> League.changeset(attrs) |> Repo.insert()
+    end
 
-    sport =
-      %Sport{name: "Football", team: true} |> Repo.insert!
+    sport = %Sport{name: "Football", team: true} |> Repo.insert!()
 
     {
       :ok,
-      create_league: create_league,
-      sport: sport
+      create_league: create_league, sport: sport
     }
   end
 
@@ -41,8 +36,11 @@ defmodule ScorifyElixir.Sports.LeagueTest do
     refute changeset.valid?
   end
 
-  test "changeset with name that already exists for the same sport", %{sport: sport, create_league: create_league} do
-    other_sport = %Sport{name: "Basketball", team: true} |> Repo.insert!
+  test "changeset with name that already exists for the same sport", %{
+    sport: sport,
+    create_league: create_league
+  } do
+    other_sport = %Sport{name: "Basketball", team: true} |> Repo.insert!()
     {:ok, _} = create_league.(%{@valid_attrs | sport_id: sport.id})
 
     assert {:error, _} = create_league.(%{@valid_attrs | sport_id: sport.id})
@@ -51,11 +49,17 @@ defmodule ScorifyElixir.Sports.LeagueTest do
 
   test "has many :league_seasons", %{sport: sport, create_league: create_league} do
     {:ok, league} = create_league.(%{@valid_attrs | sport_id: sport.id})
+
     league_season =
       %LeagueSeason{}
-      |> LeagueSeason.changeset(%{league_id: league.id, start_date: "2018-05-15", end_date: "2019-03-15"})
-      |> Repo.insert!
+      |> LeagueSeason.changeset(%{
+        league_id: league.id,
+        start_date: "2018-05-15",
+        end_date: "2019-03-15"
+      })
+      |> Repo.insert!()
+
     league_season_id = league_season.id
-    assert %LeagueSeason{id: ^league_season_id} = league |> assoc(:league_seasons) |> Repo.one
+    assert %LeagueSeason{id: ^league_season_id} = league |> assoc(:league_seasons) |> Repo.one()
   end
 end

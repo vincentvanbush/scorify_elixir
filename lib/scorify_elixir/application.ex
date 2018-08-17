@@ -11,7 +11,7 @@ defmodule ScorifyElixir.Application do
       # Start the Ecto repository
       supervisor(ScorifyElixir.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(ScorifyElixirWeb.Endpoint, []),
+      supervisor(ScorifyElixirWeb.Endpoint, [])
       # Start your own worker by calling: ScorifyElixir.Worker.start_link(arg1, arg2, arg3)
       # worker(ScorifyElixir.Worker, [arg1, arg2, arg3]),
     ]

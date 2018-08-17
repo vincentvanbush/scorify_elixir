@@ -6,7 +6,7 @@ defmodule ScorifyElixir.Sports do
   require Ecto.Query
 
   def list_sports do
-    Sport |> Repo.all
+    Sport |> Repo.all()
   end
 
   def get_sport(id) do
@@ -16,7 +16,7 @@ defmodule ScorifyElixir.Sports do
   def create_sport(attrs \\ %{}) do
     %Sport{}
     |> Sport.changeset(attrs)
-    |> Repo.insert
+    |> Repo.insert()
   end
 
   def get_league(id) do
@@ -24,20 +24,23 @@ defmodule ScorifyElixir.Sports do
   end
 
   def list_leagues do
-    League |> Repo.all
+    League |> Repo.all()
   end
 
   def list_leagues(sport = %Sport{}) do
-    assoc(sport, :leagues) |> Repo.all
+    assoc(sport, :leagues) |> Repo.all()
   end
 
   def list_league_sides(league = %League{}) do
     last_season = league |> league_last_season
+
     case last_season do
       %LeagueSeason{} ->
-        last_season |> assoc(:sides) |> Repo.all
+        last_season |> assoc(:sides) |> Repo.all()
+
       nil ->
         []
+
       _ ->
         raise "fug"
     end
@@ -49,58 +52,65 @@ defmodule ScorifyElixir.Sports do
 
   def league_last_season(league = %League{}) do
     league_seasons_query = league |> assoc(:league_seasons)
+
     last_season_query =
-      from l in league_seasons_query,
-      where: l.start_date <= from_now(0, "day"),
-      order_by: [desc: :start_date],
-      limit: 1
-    last_season_query |> Repo.one
+      from(
+        l in league_seasons_query,
+        where: l.start_date <= from_now(0, "day"),
+        order_by: [desc: :start_date],
+        limit: 1
+      )
+
+    last_season_query |> Repo.one()
   end
 
   def current_side_leagues(side = %Side{}) do
     league_seasons_query = side |> assoc(:league_seasons)
+
     query =
-      from league_season in league_seasons_query,
-      join: league in assoc(league_season, :league),
-      where: (league_season.start_date <= from_now(0, "day")) and (league_season.end_date >= from_now(0, "day")),
-      preload: [league: league]
-    league_seasons = query |> Repo.all
+      from(
+        league_season in league_seasons_query,
+        join: league in assoc(league_season, :league),
+        where:
+          league_season.start_date <= from_now(0, "day") and
+            league_season.end_date >= from_now(0, "day"),
+        preload: [league: league]
+      )
+
+    league_seasons = query |> Repo.all()
     Enum.map(league_seasons, fn season -> season.league end)
   end
 
   def list_sport_sides(sport) do
-    sport |> assoc(:sides) |> Repo.all
+    sport |> assoc(:sides) |> Repo.all()
   end
 
   def create_league(sport, attrs \\ %{}) do
     sport
     |> build_assoc(:leagues, attrs)
     |> League.changeset(%{})
-    |> Repo.insert
+    |> Repo.insert()
   end
 
-  @spec create_side(ScorifyElixir.Sports.Sport.t(), [{atom(), any()}, ...] | map()) :: any()
   def create_side(sport = %Sport{}, attrs \\ %{}) do
     sport
     |> build_assoc(:sides, attrs)
     |> Side.changeset(%{})
-    |> Repo.insert
+    |> Repo.insert()
   end
 
-  @spec add_side_to_league(ScorifyElixir.Sports.Side.t(), [{:league, ScorifyElixir.Sports.League.t()}, ...]) :: ScorifyElixir.Sports.Side.t()
   def add_side_to_league(side = %Side{}, league: %League{} = league) do
     last_season = league |> league_last_season
     add_side_to_league_season(side, league_season: last_season)
   end
 
-  def add_side_to_league_season(side = %Side{},
-                                league_season: (%LeagueSeason{} = league_season)) do
+  def add_side_to_league_season(side = %Side{}, league_season: %LeagueSeason{} = league_season) do
     %SideLeagueSeason{}
     |> change
     |> put_assoc(:side, side)
     |> put_assoc(:league_season, league_season)
-    |> SideLeagueSeason.changeset
-    |> Repo.insert
+    |> SideLeagueSeason.changeset()
+    |> Repo.insert()
   end
 
   def create_league_season(league, attrs = %{}) do
@@ -108,6 +118,7 @@ defmodule ScorifyElixir.Sports do
       league
       |> build_assoc(:league_seasons)
       |> LeagueSeason.changeset(attrs)
-    season |> Repo.insert
+
+    season |> Repo.insert()
   end
 end

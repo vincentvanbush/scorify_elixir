@@ -22,6 +22,7 @@ defmodule ScorifyElixirWeb.Sports.SideResolver do
   def add_to_league(side, %{league_id: league_id}, _info) do
     league = get_league(league_id)
     {status, result} = side |> add_side_to_league(league: league)
+
     case status do
       :ok -> {:ok, side}
       :error -> {:error, result}
