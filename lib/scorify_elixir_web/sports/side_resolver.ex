@@ -11,6 +11,10 @@ defmodule ScorifyElixirWeb.Sports.SideResolver do
     {:ok, sport |> list_sport_sides}
   end
 
+  def find(%{id: id}, _) do
+    {:ok, get_side!(id)}
+  end
+
   def create(sport, attrs = %{}, _info) do
     {:ok, sport |> create_side(attrs)}
   end

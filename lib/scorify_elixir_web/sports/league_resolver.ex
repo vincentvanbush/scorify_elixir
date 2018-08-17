@@ -14,6 +14,10 @@ defmodule ScorifyElixirWeb.Sports.LeagueResolver do
     {:ok, Sports.create_league(sport, attrs)}
   end
 
+  def side_leagues(side, _attrs, _info) do
+    {:ok, side |> Sports.current_side_leagues()}
+  end
+
   def current_sides(sides_query, _args, _context) do
     Ecto.Query.from(s in sides_query,
                     where: fragment(

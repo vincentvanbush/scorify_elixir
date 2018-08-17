@@ -29,6 +29,10 @@ defmodule ScorifyElixirWeb.Schema.Types do
     field(:sport, :sport, resolve: assoc(:sport))
     field(:location, :location, resolve: assoc(:location))
     field(:league_seasons, list_of(:league_season), resolve: assoc(:league_seasons))
+
+    field(:leagues, list_of(:league)) do
+      resolve &Sports.LeagueResolver.side_leagues/3
+    end
   end
 
   object :league_season do

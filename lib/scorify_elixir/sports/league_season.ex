@@ -2,8 +2,6 @@ defmodule ScorifyElixir.Sports.LeagueSeason do
   use Ecto.Schema
   import Ecto.Changeset
 
-  require IEx
-
   schema "league_seasons" do
     field :end_date, :date
     field :name, :string

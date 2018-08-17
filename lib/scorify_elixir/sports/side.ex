@@ -9,6 +9,7 @@ defmodule ScorifyElixir.Sports.Side do
     belongs_to :sport, ScorifyElixir.Sports.Sport
     belongs_to :location, ScorifyElixir.Sports.Location
     many_to_many :league_seasons, ScorifyElixir.Sports.LeagueSeason, join_through: "sides_league_seasons"
+    has_many :leagues, through: [:league_seasons, :league]
 
     timestamps()
   end

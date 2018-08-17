@@ -1,5 +1,4 @@
 defmodule ScorifyElixirWeb.Schema do
-  require IEx
   use Absinthe.Schema
   Absinthe.Resolution
   import_types(ScorifyElixirWeb.Schema.Types)
@@ -23,6 +22,11 @@ defmodule ScorifyElixirWeb.Schema do
     field :leagues, list_of(:league) do
       arg(:sport_id, non_null(:id))
       resolve(&Sports.LeagueResolver.all/2)
+    end
+
+    field :side, :side do
+      arg(:id, non_null(:id))
+      resolve(&Sports.SideResolver.find/2)
     end
 
     mutation do

@@ -5,8 +5,6 @@ defmodule ScorifyElixir.Sports do
   import Ecto.{Query, Changeset}
   require Ecto.Query
 
-  require IEx
-
   def list_sports do
     Sport |> Repo.all
   end
@@ -50,6 +48,17 @@ defmodule ScorifyElixir.Sports do
       order_by: [desc: :start_date],
       limit: 1
     last_season_query |> Repo.one!
+  end
+
+  def current_side_leagues(side = %Side{}) do
+    league_seasons_query = side |> assoc(:league_seasons)
+    query =
+      from league_season in league_seasons_query,
+      join: league in assoc(league_season, :league),
+      where: (league_season.start_date <= from_now(0, "day")) and (league_season.end_date >= from_now(0, "day")),
+      preload: [league: league]
+    league_seasons = query |> Repo.all
+    Enum.map(league_seasons, fn season -> season.league end)
   end
 
   def list_sport_sides(sport) do
