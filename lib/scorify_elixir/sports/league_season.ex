@@ -40,5 +40,6 @@ defmodule ScorifyElixir.Sports.LeagueSeason do
     league_season
     |> cast(attrs, [:name, :start_date, :end_date])
     |> validate_required([:name, :start_date, :end_date])
+    |> unique_constraint(:name, name: :league_seasons_league_id_name_index)
   end
 end

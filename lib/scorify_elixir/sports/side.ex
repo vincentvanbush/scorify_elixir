@@ -18,5 +18,6 @@ defmodule ScorifyElixir.Sports.Side do
     side
     |> cast(attrs, [:name])
     |> validate_required([:name])
+    |> unique_constraint(:name, name: :sides_sport_id_name_index)
   end
 end

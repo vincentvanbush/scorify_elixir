@@ -18,5 +18,6 @@ defmodule ScorifyElixir.Sports.Sport do
     sport
     |> cast(attrs, [:name, :team])
     |> validate_required([:name, :team])
+    |> unique_constraint(:name)
   end
 end
