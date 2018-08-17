@@ -17,8 +17,8 @@ defmodule ScorifyElixir.Sports.Side do
   @doc false
   def changeset(side, attrs) do
     side
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :sport_id])
+    |> validate_required([:name, :sport_id])
     |> unique_constraint(:name, name: :sides_sport_id_name_index)
   end
 end

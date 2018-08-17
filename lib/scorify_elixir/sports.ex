@@ -33,7 +33,14 @@ defmodule ScorifyElixir.Sports do
 
   def list_league_sides(league = %League{}) do
     last_season = league |> league_last_season
-    last_season |> assoc(:sides) |> Repo.all
+    case last_season do
+      %LeagueSeason{} ->
+        last_season |> assoc(:sides) |> Repo.all
+      nil ->
+        []
+      _ ->
+        raise "fug"
+    end
   end
 
   def get_side!(id) do
@@ -47,7 +54,7 @@ defmodule ScorifyElixir.Sports do
       where: l.start_date <= from_now(0, "day"),
       order_by: [desc: :start_date],
       limit: 1
-    last_season_query |> Repo.one!
+    last_season_query |> Repo.one
   end
 
   def current_side_leagues(side = %Side{}) do
