@@ -82,12 +82,28 @@ defmodule ScorifyElixir.SportsTest do
       assert %Side{id: ^side_id} = Sports.get_side(side_id)
     end
 
-    test "returns nil for nonexistent record", %{side: %Side{id: side_id}} do
+    test "returns nil for nonexistent record", %{side: %Side{}} do
       assert(nil == Sports.get_side(9999))
     end
   end
 
-  describe "league_last_season" do
+  describe "league_current_season" do
+    setup [
+      :create_league,
+      :create_league_current_season,
+      :create_league_future_season,
+      :create_league_past_season
+    ]
+
+    test "returns current league season", %{
+      league: league,
+      current_league_season: %LeagueSeason{id: current_league_season_id},
+      past_league_season: _,
+      future_league_season: _
+    } do
+      assert %LeagueSeason{id: ^current_league_season_id} =
+               league |> Sports.league_current_season()
+    end
   end
 
   describe "current_side_leagues" do
@@ -127,20 +143,54 @@ defmodule ScorifyElixir.SportsTest do
     create_league(context |> Map.put(:sport, sport))
   end
 
-  def create_league_current_season(context = %{league: %League{} = league}) do
+  defp create_league_season(context = %{league: %League{} = league}, start_date, end_date, as: as) do
+    {:ok, league_season} =
+      league
+      |> Sports.create_league_season(%{
+        start_date: start_date,
+        end_date: end_date
+      })
+
+    context |> Map.put(as, league_season)
+  end
+
+  def create_league_current_season(context = %{league: %League{}}) do
     today = Date.utc_today()
     {:ok, month_begin} = Date.new(today.year, today.month, 1)
     {:ok, next_year_month_before} = Date.new(month_begin.year + 1, today.month - 1, 1)
 
-    {:ok, league_season} =
-      league
-      |> Sports.create_league_season(%{
-        name: "Current Season",
-        start_date: month_begin |> Date.to_string(),
-        end_date: next_year_month_before |> Date.to_string()
-      })
+    context
+    |> create_league_season(
+      month_begin |> Date.to_string(),
+      next_year_month_before |> Date.to_string(),
+      as: :current_league_season
+    )
+  end
 
-    context |> Map.put(:current_league_season, league_season)
+  def create_league_future_season(context = %{league: %League{}}) do
+    today = Date.utc_today()
+    {:ok, month_begin} = Date.new(today.year + 1, today.month, 1)
+    {:ok, next_year_month_before} = Date.new(month_begin.year + 2, today.month - 1, 1)
+
+    context
+    |> create_league_season(
+      month_begin |> Date.to_string(),
+      next_year_month_before |> Date.to_string(),
+      as: :future_league_season
+    )
+  end
+
+  def create_league_past_season(context = %{league: %League{}}) do
+    today = Date.utc_today()
+    {:ok, month_begin} = Date.new(today.year - 1, today.month, 1)
+    {:ok, next_year_month_before} = Date.new(month_begin.year, today.month - 1, 1)
+
+    context
+    |> create_league_season(
+      month_begin |> Date.to_string(),
+      next_year_month_before |> Date.to_string(),
+      as: :past_league_season
+    )
   end
 
   def create_sport_side(context = %{sport: %Sport{} = sport}) do
