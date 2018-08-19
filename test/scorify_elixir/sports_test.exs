@@ -128,23 +128,28 @@ defmodule ScorifyElixir.SportsTest do
       :create_sport_side
     ]
 
-    test "returns league for side if side enrolled in current season", context do
-      %{league: %{id: league_id}, side: side} = create_league_side_current_season(context)
+    test "returns league for side if side enrolled in current season", context = %{league: %League{id: league_id}} do
+      %{league: %{id: ^league_id}, side: side} = create_league_side_current_season(context)
       assert [%League{id: ^league_id} | []] = Sports.current_side_leagues(side)
     end
 
-    test "does not return league for side if side enrolled in past season", context do
-      %{league: %{id: league_id}, side: side} = create_league_side_past_season(context)
+    test "does not return league for side if side enrolled in past season", context = %{league: %League{id: league_id}} do
+      %{league: %{id: ^league_id}, side: side} = create_league_side_past_season(context)
       assert [] = Sports.current_side_leagues(side)
     end
 
-    test "does not return league for side if side enrolled in future season", context do
-      %{league: %{id: league_id}, side: side} = create_league_side_future_season(context)
+    test "does not return league for side if side enrolled in future season", context = %{league: %League{id: league_id}} do
+      %{league: %{id: ^league_id}, side: side} = create_league_side_future_season(context)
       assert [] = Sports.current_side_leagues(side)
     end
   end
 
   describe "list_sport_sides" do
+    setup [:create_sport, :create_other_sport, :create_sport_side, :create_other_side]
+
+    test "returns list of sides in given sport", %{sport: sport, other_sport: _, side: %Side{id: side_id}, other_side: %Side{}} do
+      assert [%Side{id: ^side_id} | []] = Sports.list_sport_sides(sport)
+    end
   end
 
   describe "create_league" do
@@ -164,6 +169,11 @@ defmodule ScorifyElixir.SportsTest do
   def create_sport(context \\ %{}) do
     {:ok, sport} = Sports.create_sport(%{name: "Tennis"})
     context |> Map.put(:sport, sport)
+  end
+
+  def create_other_sport(context \\ %{}) do
+    {:ok, sport} = Sports.create_sport(%{name: "Basketball", team: true})
+    context |> Map.put(:other_sport, sport)
   end
 
   def create_league(context \\ %{})
@@ -233,6 +243,11 @@ defmodule ScorifyElixir.SportsTest do
     context |> Map.put(:side, side)
   end
 
+  def create_other_side(context = %{other_sport: %Sport{} = sport}) do
+    {:ok, other_side} = sport |> Sports.create_side(%{name: "Ebin"})
+    context |> Map.put(:other_side, other_side)
+  end
+
   def create_league_side_current_season(
         context = %{
           side: %Side{} = side,
@@ -261,11 +276,5 @@ defmodule ScorifyElixir.SportsTest do
       ) do
     {:ok, _} = side |> Sports.add_side_to_league_season(league_season: future_league_season)
     context
-  end
-
-  def create_other_side(context) do
-  end
-
-  def create_former_league_side(context) do
   end
 end
