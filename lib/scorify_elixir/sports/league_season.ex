@@ -13,27 +13,23 @@ defmodule ScorifyElixir.Sports.LeagueSeason do
     timestamps()
   end
 
-  @doc false
-  def changeset(league_season, attrs = %{start_date: start_date, end_date: end_date, name: name})
-      when is_nil(name) and not (is_nil(start_date) or is_nil(end_date)) do
-    start_year = try do: Ecto.Date.cast!(start_date).year, rescue: (_ in Ecto.CastError -> nil)
-    end_year = try do: Ecto.Date.cast!(end_date).year, rescue: (_ in Ecto.CastError -> nil)
-    make_changeset(league_season, attrs |> Map.put(:name, "#{start_year}/#{end_year}"))
-  end
-
-  def changeset(league_season, attrs = %{name: name}) when is_nil(name) do
-    make_changeset(league_season, attrs |> Map.put(:name, nil))
-  end
-
-  def changeset(league_season, attrs = %{name: _name}) do
-    make_changeset(league_season, attrs)
-  end
-
+  @spec changeset(%{:__struct__ => atom(), :name => any(), optional(atom()) => any()}, :invalid | map()) :: Ecto.Changeset.t()
   def changeset(league_season, attrs) do
-    changeset(league_season, attrs |> Map.put_new(:name, nil))
-  end
+    attrs =
+      if league_season.name == nil do
+        start_year =
+          try do: Ecto.Date.cast!(attrs[:start_date] || league_season[:start_date]).year,
+              rescue: (_ in Ecto.CastError -> nil)
 
-  defp make_changeset(league_season, attrs) do
+        end_year =
+          try do: Ecto.Date.cast!(attrs[:end_date] || league_season[:end_date]).year,
+              rescue: (_ in Ecto.CastError -> nil)
+
+        attrs |> Map.put(:name, "#{start_year}/#{end_year}")
+      else
+        attrs
+      end
+
     league_season
     |> cast(attrs, [:name, :start_date, :end_date, :league_id])
     |> validate_required([:name, :start_date, :end_date, :league_id])

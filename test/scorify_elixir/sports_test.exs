@@ -7,6 +7,8 @@ defmodule ScorifyElixir.SportsTest do
 
   alias ScorifyElixir.SportsTest
 
+  require IEx
+
   describe "list_sports" do
     setup [:create_sport]
 
@@ -103,6 +105,19 @@ defmodule ScorifyElixir.SportsTest do
     } do
       assert %LeagueSeason{id: ^current_league_season_id} =
                league |> Sports.league_current_season()
+    end
+
+    test "returns league season that has just ended if no next season was created", %{
+      league: league,
+      current_league_season: %LeagueSeason{start_date: d} = current_league_season
+    } do
+      {:ok, new_end_date} = Date.new(d.year, d.month, d.day + 1)
+
+      %LeagueSeason{id: updated_season_id} =
+        current_league_season |> LeagueSeason.changeset(%{end_date: new_end_date})
+        |> ScorifyElixir.Repo.update!()
+
+      assert %LeagueSeason{id: ^updated_season_id} = league |> Sports.league_current_season()
     end
   end
 
