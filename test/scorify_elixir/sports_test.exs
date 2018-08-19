@@ -7,8 +7,6 @@ defmodule ScorifyElixir.SportsTest do
 
   alias ScorifyElixir.SportsTest
 
-  require IEx
-
   describe "list_sports" do
     setup [:create_sport]
 
@@ -122,6 +120,28 @@ defmodule ScorifyElixir.SportsTest do
   end
 
   describe "current_side_leagues" do
+    setup [
+      :create_league,
+      :create_league_current_season,
+      :create_league_future_season,
+      :create_league_past_season,
+      :create_sport_side
+    ]
+
+    test "returns league for side if side enrolled in current season", context do
+      %{league: %{id: league_id}, side: side} = create_league_side_current_season(context)
+      assert [%League{id: ^league_id} | []] = Sports.current_side_leagues(side)
+    end
+
+    test "does not return league for side if side enrolled in past season", context do
+      %{league: %{id: league_id}, side: side} = create_league_side_past_season(context)
+      assert [] = Sports.current_side_leagues(side)
+    end
+
+    test "does not return league for side if side enrolled in future season", context do
+      %{league: %{id: league_id}, side: side} = create_league_side_future_season(context)
+      assert [] = Sports.current_side_leagues(side)
+    end
   end
 
   describe "list_sport_sides" do
@@ -220,6 +240,26 @@ defmodule ScorifyElixir.SportsTest do
         }
       ) do
     {:ok, _} = side |> Sports.add_side_to_league_season(league_season: current_league_season)
+    context
+  end
+
+  def create_league_side_past_season(
+        context = %{
+          side: %Side{} = side,
+          past_league_season: %LeagueSeason{} = past_league_season
+        }
+      ) do
+    {:ok, _} = side |> Sports.add_side_to_league_season(league_season: past_league_season)
+    context
+  end
+
+  def create_league_side_future_season(
+        context = %{
+          side: %Side{} = side,
+          future_league_season: %LeagueSeason{} = future_league_season
+        }
+      ) do
+    {:ok, _} = side |> Sports.add_side_to_league_season(league_season: future_league_season)
     context
   end
 
