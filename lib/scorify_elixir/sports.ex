@@ -92,11 +92,23 @@ defmodule ScorifyElixir.Sports do
     |> Repo.insert()
   end
 
+  def update_league(league, attrs \\ %{}) do
+    league
+    |> League.changeset(attrs)
+    |> Repo.update()
+  end
+
   def create_side(sport = %Sport{}, attrs \\ %{}) do
     sport
     |> build_assoc(:sides, attrs)
     |> Side.changeset(%{})
     |> Repo.insert()
+  end
+
+  def update_side(side = %Side{}, attrs \\ %{}) do
+    side
+    |> Side.changeset(attrs)
+    |> Repo.update()
   end
 
   def add_side_to_league(side = %Side{}, league: %League{} = league) do
@@ -122,5 +134,11 @@ defmodule ScorifyElixir.Sports do
       |> LeagueSeason.changeset(attrs)
 
     season |> Repo.insert()
+  end
+
+  def update_league_season(league_season, attrs = %{}) do
+    league_season
+    |> LeagueSeason.changeset(attrs)
+    |> Repo.update()
   end
 end
