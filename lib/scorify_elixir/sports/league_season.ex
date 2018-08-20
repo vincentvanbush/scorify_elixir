@@ -16,13 +16,13 @@ defmodule ScorifyElixir.Sports.LeagueSeason do
   @spec changeset(%{:__struct__ => atom(), :name => any(), optional(atom()) => any()}, :invalid | map()) :: Ecto.Changeset.t()
   def changeset(league_season, attrs) do
     attrs =
-      if league_season.name == nil do
+      if attrs[:name] == nil do
         start_year =
-          try do: Ecto.Date.cast!(attrs[:start_date] || league_season[:start_date]).year,
+          try do: Ecto.Date.cast!(attrs[:start_date] || league_season.start_date).year,
               rescue: (_ in Ecto.CastError -> nil)
 
         end_year =
-          try do: Ecto.Date.cast!(attrs[:end_date] || league_season[:end_date]).year,
+          try do: Ecto.Date.cast!(attrs[:end_date] || league_season.end_date).year,
               rescue: (_ in Ecto.CastError -> nil)
 
         attrs |> Map.put(:name, "#{start_year}/#{end_year}")

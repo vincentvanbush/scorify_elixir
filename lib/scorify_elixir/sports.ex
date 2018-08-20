@@ -100,8 +100,10 @@ defmodule ScorifyElixir.Sports do
   end
 
   def add_side_to_league(side = %Side{}, league: %League{} = league) do
-    last_season = league |> league_current_season
-    add_side_to_league_season(side, league_season: last_season)
+    case league |> league_current_season do
+      %LeagueSeason{} = last_season -> add_side_to_league_season(side, league_season: last_season)
+      nil -> {:error, :no_season}
+    end
   end
 
   def add_side_to_league_season(side = %Side{}, league_season: %LeagueSeason{} = league_season) do

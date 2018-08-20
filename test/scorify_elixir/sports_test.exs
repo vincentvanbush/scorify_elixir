@@ -3,7 +3,7 @@ defmodule ScorifyElixir.SportsTest do
   use ScorifyElixir.DataCase
   alias ScorifyElixir.Sports
 
-  alias ScorifyElixir.Sports.{Sport, League, LeagueSeason, Side}
+  alias ScorifyElixir.Sports.{Sport, League, LeagueSeason, Side, SideLeagueSeason}
 
   alias ScorifyElixir.SportsTest
 
@@ -128,17 +128,20 @@ defmodule ScorifyElixir.SportsTest do
       :create_sport_side
     ]
 
-    test "returns league for side if side enrolled in current season", context = %{league: %League{id: league_id}} do
+    test "returns league for side if side enrolled in current season",
+         context = %{league: %League{id: league_id}} do
       %{league: %{id: ^league_id}, side: side} = create_league_side_current_season(context)
       assert [%League{id: ^league_id} | []] = Sports.current_side_leagues(side)
     end
 
-    test "does not return league for side if side enrolled in past season", context = %{league: %League{id: league_id}} do
+    test "does not return league for side if side enrolled in past season",
+         context = %{league: %League{id: league_id}} do
       %{league: %{id: ^league_id}, side: side} = create_league_side_past_season(context)
       assert [] = Sports.current_side_leagues(side)
     end
 
-    test "does not return league for side if side enrolled in future season", context = %{league: %League{id: league_id}} do
+    test "does not return league for side if side enrolled in future season",
+         context = %{league: %League{id: league_id}} do
       %{league: %{id: ^league_id}, side: side} = create_league_side_future_season(context)
       assert [] = Sports.current_side_leagues(side)
     end
@@ -147,21 +150,78 @@ defmodule ScorifyElixir.SportsTest do
   describe "list_sport_sides" do
     setup [:create_sport, :create_other_sport, :create_sport_side, :create_other_side]
 
-    test "returns list of sides in given sport", %{sport: sport, other_sport: _, side: %Side{id: side_id}, other_side: %Side{}} do
+    test "returns list of sides in given sport", %{
+      sport: sport,
+      other_sport: _,
+      side: %Side{id: side_id},
+      other_side: %Side{}
+    } do
       assert [%Side{id: ^side_id} | []] = Sports.list_sport_sides(sport)
     end
   end
 
   describe "create_league" do
+    setup [:create_sport]
+
+    test "creates a league in a sport", %{sport: sport} do
+      assert {:ok, %League{id: _}} = sport |> Sports.create_league(%{name: "Major League Soccer"})
+    end
+
+    test "does not create a league with invalid attrs", %{sport: sport} do
+      assert {:error, %Ecto.Changeset{}} = sport |> Sports.create_league(%{name: ""})
+    end
   end
 
   describe "add_side_to_league" do
+    setup [:create_sport, :create_league, :create_sport_side]
+
+    test "does not add side to league when no season is created", %{league: league, side: side} do
+      assert {:error, :no_season} = side |> Sports.add_side_to_league(league: league)
+    end
+
+    test "adds side to last league season", context = %{league: league, side: side} do
+      %{current_league_season: %LeagueSeason{id: current_league_season_id}, past_league_season: _} =
+        context
+        |> create_league_current_season()
+        |> create_league_past_season()
+
+      assert {:ok, %SideLeagueSeason{league_season_id: ^current_league_season_id}} =
+               side |> Sports.add_side_to_league(league: league)
+    end
   end
 
   describe "add_side_to_league_season" do
+    setup [:create_sport, :create_league, :create_sport_side, :create_league_future_season]
+
+    test "adds side to specific league season", %{
+      side: side,
+      future_league_season: %LeagueSeason{id: future_league_season_id} = future_league_season
+    } do
+      assert {:ok, %SideLeagueSeason{league_season_id: future_league_season_id}} =
+               side |> Sports.add_side_to_league_season(league_season: future_league_season)
+    end
   end
 
   describe "create_league_season" do
+    setup [:create_sport, :create_league]
+
+    test "creates specific league season with automatically filled name", %{
+      sport: sport,
+      league: %League{id: league_id} = league
+    } do
+      assert {:ok, %LeagueSeason{league_id: league_id, name: "2015/2016"}} =
+               league
+               |> Sports.create_league_season(%{start_date: "2015-07-10", end_date: "2016-05-10"})
+    end
+
+    test "creates specific league season with manually set name", %{
+      sport: sport,
+      league: %League{id: league_id} = league
+    } do
+      assert {:ok, %LeagueSeason{league_id: league_id, name: "Cucumber Season"}} =
+               league
+               |> Sports.create_league_season(%{name: "Cucumber Season", start_date: "2015-07-10", end_date: "2016-05-10"})
+    end
   end
 
   # Named setups
