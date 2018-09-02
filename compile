@@ -1,0 +1,4 @@
+cd $phoenix_dir/assets
+yarn build
+cd ..
+MIX_ENV=prod mix phx.digest
