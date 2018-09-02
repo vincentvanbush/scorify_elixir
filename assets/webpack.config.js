@@ -96,7 +96,7 @@ module.exports = [
     ],
     output: production
     ? {
-      path: resolve(__dirname + "../priv/static/js"),
+      path: resolve(__dirname, "../priv/static/js"),
       filename: "app.js"
     }
     : {
