@@ -9,6 +9,7 @@ defmodule ScorifyElixir.Sports.Sport do
 
     has_many :sides, ScorifyElixir.Sports.Side
     has_many :leagues, ScorifyElixir.Sports.League
+    has_many :players, ScorifyElixir.Sports.Player
 
     timestamps()
   end

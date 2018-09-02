@@ -53,6 +53,12 @@ defmodule ScorifyElixirWeb.Schema do
         resolve safely(&Sports.LeagueSeasonResolver.create/3)
       end
 
+      @desc "Update a league season"
+      field :update_league_season, type: :league_season do
+        arg :id, non_null(:id)
+        arg :params, non_null(:update_league_season_params)
+      end
+
       @desc "Create a side in a sport"
       field :create_side, type: :side do
         arg :name, non_null(:string)

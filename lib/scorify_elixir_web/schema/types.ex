@@ -55,4 +55,10 @@ defmodule ScorifyElixirWeb.Schema.Types do
     field(:street_address, :string)
     field(:sides, list_of(:side), resolve: assoc(:sides))
   end
+
+  input_object :update_league_season_params do
+    field(:name, :string)
+    field(:start_date, :string)
+    field(:end_date, :string)
+  end
 end

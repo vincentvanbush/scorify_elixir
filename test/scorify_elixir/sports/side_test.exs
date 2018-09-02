@@ -48,6 +48,13 @@ defmodule ScorifyElixir.Sports.SideTest do
     refute changeset.valid?
   end
 
+  test "changeset with a bad sport_id" do
+    changeset =
+      %Side{} |> Side.changeset(@attrs_without_sport_id) |> Side.changeset(%{sport_id: 12345})
+
+    assert {:error, _} = changeset |> Repo.insert()
+  end
+
   test "changeset without name" do
     changeset = %Side{} |> Side.changeset(@attrs_without_name)
     refute changeset.valid?

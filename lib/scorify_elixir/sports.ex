@@ -1,6 +1,16 @@
 defmodule ScorifyElixir.Sports do
   alias ScorifyElixir.Repo
-  alias ScorifyElixir.Sports.{Sport, League, Side, LeagueSeason, SideLeagueSeason}
+
+  alias ScorifyElixir.Sports.{
+    Sport,
+    League,
+    Side,
+    LeagueSeason,
+    SideLeagueSeason,
+    Player,
+    PlayerSide
+  }
+
   import Ecto
   import Ecto.{Query, Changeset}
   require Ecto.Query
@@ -140,5 +150,35 @@ defmodule ScorifyElixir.Sports do
     league_season
     |> LeagueSeason.changeset(attrs)
     |> Repo.update()
+  end
+
+  def add_player_to_side(side, player, league_season = %LeagueSeason{}) do
+    add_player_to_side(side, player, league_season.start_date, league_season.end_date)
+  end
+
+  def add_player_to_side(side, player, from_date, until_date) do
+    side
+    |> build_assoc(:player_sides)
+    |> PlayerSide.changeset(%{from_date: from_date, until_date: until_date})
+    |> put_assoc(:player, player)
+    |> Repo.insert()
+  end
+
+  def current_side_players(side = %Side{}) do
+    side |> get_side_players_at_given_date(Date.utc_today)
+  end
+
+  def get_side_players_at_given_date(side = %Side{}, date) do
+    Repo.all(
+      from(
+        player in Player,
+        right_join: player_side in PlayerSide,
+        on: [player_id: player.id],
+        where: player_side.from_date <= ^date,
+        where: player_side.until_date >= ^date,
+        where: player_side.side_id == ^side.id,
+        select: %{player: player, player_side: player_side}
+      )
+    )
   end
 end
