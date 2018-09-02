@@ -1,5 +1,8 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
+const resolve = require('path').resolve;
+
 var merge = require("webpack-merge");
 var webpack = require("webpack");
 
@@ -57,11 +60,11 @@ var common = {
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        loader: "file-loader?name=/images/[name].[ext]"
+        loader: "file-loader?name=app/assets/[name].[ext]"
       },
       {
         test: /\.(ttf|otf|eot|svg|woff2?)$/,
-        loader: "file-loader?name=/fonts/[name].[ext]",
+        loader: "file-loader?name=app/assets/[name].[ext]",
       },
       {
         test: /\.css$/,
@@ -81,13 +84,25 @@ var common = {
 
 module.exports = [
   merge(common, {
+    devServer: {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      port: 8080
+    },
     entry: [
       __dirname + "/app/app.scss",
       __dirname + "/app/app.js"
     ],
-    output: {
-      path: __dirname + "/../priv/static",
-      filename: "js/app.js"
+    output: production
+    ? {
+      path: resolve(__dirname + "../priv/static/js"),
+      filename: "app.js"
+    }
+    : {
+      path: resolve(__dirname, 'public'),
+      filename: 'app.js',
+      publicPath: 'http://localhost:8080/'
     },
     resolve: {
       modules: [
@@ -95,8 +110,12 @@ module.exports = [
         __dirname + "/app"
       ]
     },
-    optimization: {
+    optimization: production
+    ? {
       minimize: production
+    }
+    : {
+      minimize: false
     }
   })
 ];
