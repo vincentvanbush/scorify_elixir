@@ -60,11 +60,11 @@ var common = {
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        loader: "file-loader?name=app/assets/[name].[ext]"
+        loader: `file-loader?name=/app/assets/[name].[ext]`
       },
       {
         test: /\.(ttf|otf|eot|svg|woff2?)$/,
-        loader: "file-loader?name=app/assets/[name].[ext]",
+        loader: `file-loader?name=/app/assets/[name].[ext]`
       },
       {
         test: /\.css$/,
@@ -96,8 +96,9 @@ module.exports = [
     ],
     output: production
     ? {
-      path: resolve(__dirname + "../priv/static/js"),
-      filename: "app.js"
+      path: resolve(__dirname, "../priv/static/js"),
+      filename: "app.js",
+      publicPath: "/js"
     }
     : {
       path: resolve(__dirname, 'public'),
