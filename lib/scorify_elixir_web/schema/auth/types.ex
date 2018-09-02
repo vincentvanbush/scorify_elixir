@@ -4,5 +4,8 @@ defmodule ScorifyElixirWeb.Schema.Auth.Types do
 
   object :user do
     field(:id, :id)
+    field(:name, :string)
+    field(:email, :string)
+    field(:password, :string)
   end
 end

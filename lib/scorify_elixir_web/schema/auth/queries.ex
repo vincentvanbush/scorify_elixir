@@ -1,9 +1,9 @@
-defmodule ScorifyElixirWeb.Schema.Auth do
+defmodule ScorifyElixirWeb.Schema.Auth.Queries do
+  # import ScorifyElixirWeb.SafeResolver
+
   @doc false
   defmacro __using__(_opts) do
     quote do
-      import_types(ScorifyElixirWeb.Schema.Auth.Types)
-
       field :user, :user do
         arg(:id, :id)
 
