@@ -17,6 +17,7 @@ erl_crash.dump
 
 # vscode extension dir
 /.elixir_ls
+/.vscode
 
 # NodeJS modules
 node_modules
