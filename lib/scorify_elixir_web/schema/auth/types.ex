@@ -8,4 +8,8 @@ defmodule ScorifyElixirWeb.Schema.Auth.Types do
     field(:email, :string)
     field(:password, :string)
   end
+
+  object :session do
+    field(:token, :string)
+  end
 end

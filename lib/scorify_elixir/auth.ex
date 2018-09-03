@@ -10,4 +10,9 @@ defmodule ScorifyElixir.Auth do
     |> User.changeset(attrs)
     |> Repo.insert()
   end
+
+  def get_user(id) do
+    User
+    |> Repo.get(id)
+  end
 end

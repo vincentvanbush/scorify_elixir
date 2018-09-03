@@ -7,6 +7,7 @@ defmodule ScorifyElixir.Auth.User do
     field(:name, :string)
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
+    field(:token, :string)
 
     timestamps()
   end
@@ -20,6 +21,12 @@ defmodule ScorifyElixir.Auth.User do
     |> validate_length(:password, min: 8, max: 255)
     |> unique_constraint(:email, downcase: true)
     |> put_password_hash
+  end
+
+  def store_token_changeset(%ScorifyElixir.Auth.User{} = user, attrs) do
+    user
+    |> cast(attrs, [:token])
+    |> validate_required([:token])
   end
 
   defp put_password_hash(changeset) do

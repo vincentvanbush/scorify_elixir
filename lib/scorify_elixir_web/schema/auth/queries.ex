@@ -4,12 +4,12 @@ defmodule ScorifyElixirWeb.Schema.Auth.Queries do
   @doc false
   defmacro __using__(_opts) do
     quote do
-      field :user, :user do
-        arg(:id, :id)
+      # TODO: Perhaps better off as a mutation?
+      field :login, type: :session do
+        arg(:email, non_null(:string))
+        arg(:password, non_null(:string))
 
-        resolve fn (x, y) ->
-          {:ok, %{id: 555}}
-        end
+        resolve(&ScorifyElixirWeb.Auth.UserResolver.login/2)
       end
     end
   end
