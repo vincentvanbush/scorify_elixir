@@ -4,7 +4,7 @@ Scorify app in Elixir with a HTML + JS (frontend technology TBD) app.
 
 ## Installation
 
-Install Erlang (current version - 21.0.7 as of the time of writing), and then Elixir 1.7, preferrably using https://github.com/asdf-vm, https://github.com/asdf-vm/asdf-elixir and https://github.com/asdf-vm/asdf-elixir. NodeJS is also required, you can either use your already installed node or try using https://github.com/asdf-vm/asdf-nodejs.
+Install Erlang (current version - 21.0.7 as of the time of writing), and then Elixir 1.7, preferrably using https://github.com/asdf-vm, https://github.com/asdf-vm/asdf-erlang and https://github.com/asdf-vm/asdf-elixir. NodeJS is also required, you can either use your already installed node or try using https://github.com/asdf-vm/asdf-nodejs.
 
 Use `mix deps.get` to ensure all dependencies required by the app are in place.
 
