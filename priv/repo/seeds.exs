@@ -9,3 +9,9 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias ScorifyElixir.Sports
+
+Sports.create_sport(%{name: "Football", team: true})
+Sports.create_sport(%{name: "Basketball", team: true})
+Sports.create_sport(%{name: "Tennis", team: false})
