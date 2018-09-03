@@ -9,8 +9,8 @@ defmodule ScorifyElixirWeb.Router do
     plug(:put_secure_browser_headers)
   end
 
-  pipeline :api do
-    plug(:accepts, ["json"])
+  pipeline :graphql do
+    plug ScorifyElixirWeb.Context
   end
 
   scope "/", ScorifyElixirWeb do
@@ -25,6 +25,10 @@ defmodule ScorifyElixirWeb.Router do
   #   pipe_through :api
   # end
 
-  forward("/graphql", Absinthe.Plug, schema: ScorifyElixirWeb.Schema)
-  forward("/graphiql", Absinthe.Plug.GraphiQL, schema: ScorifyElixirWeb.Schema)
+  scope "/api" do
+    pipe_through(:graphql)
+
+    forward("/graphiql", Absinthe.Plug.GraphiQL, schema: ScorifyElixirWeb.Schema)
+    forward("/graphql", Absinthe.Plug, schema: ScorifyElixirWeb.Schema)
+  end
 end
