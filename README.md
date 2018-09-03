@@ -12,6 +12,8 @@ Having ensured PostgreSQL is installed on your machine, run `mix ecto.create` an
 
 Then, run `mix run priv/repo/seeds.exs` to create some seed data for initial app usage.
 
+Finally, go to `assets` folder and use `yarn` to get JS dependencies.
+
 ## Usage
 
 To start the server in development mode, use `mix phx.server`. By default the website is available at `localhost:4000`.
