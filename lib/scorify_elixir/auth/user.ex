@@ -26,7 +26,6 @@ defmodule ScorifyElixir.Auth.User do
   def store_token_changeset(%ScorifyElixir.Auth.User{} = user, attrs) do
     user
     |> cast(attrs, [:token])
-    |> validate_required([:token])
   end
 
   defp put_password_hash(changeset) do

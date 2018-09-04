@@ -12,6 +12,11 @@ defmodule ScorifyElixirWeb.Schema.Auth.Mutations do
 
         resolve safely(&ScorifyElixirWeb.Auth.UserResolver.create/2)
       end
+
+      @desc "Sign a user out"
+      field :sign_out, type: :user do
+        resolve safely(&ScorifyElixirWeb.Auth.UserResolver.logout/2)
+      end
     end
   end
 end

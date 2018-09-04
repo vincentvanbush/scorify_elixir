@@ -15,4 +15,10 @@ defmodule ScorifyElixir.Auth do
     User
     |> Repo.get(id)
   end
+
+  def set_token(%User{} = user, token) do
+    user
+    |> User.store_token_changeset(%{token: token})
+    |> Repo.update()
+  end
 end

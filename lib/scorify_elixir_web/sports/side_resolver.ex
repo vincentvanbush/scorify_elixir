@@ -1,7 +1,10 @@
 defmodule ScorifyElixirWeb.Sports.SideResolver do
   import ScorifyElixir.Sports
   alias ScorifyElixir.Sports.{League, Sport}
+  alias ScorifyElixir.Auth.User
   require Ecto.Query
+
+  require IEx
 
   def all(league = %League{}, _, _) do
     {:ok, league |> list_league_sides}
@@ -15,8 +18,12 @@ defmodule ScorifyElixirWeb.Sports.SideResolver do
     {:ok, get_side(id)}
   end
 
-  def create(sport, attrs = %{}, _info) do
+  def create(sport, attrs = %{}, %{context: %{current_user: %User{}}}) do
     sport |> create_side(attrs)
+  end
+
+  def create(_, _, _) do
+    {:error, "Not authorized"}
   end
 
   def add_to_league(side, %{league_id: league_id}, _info) do

@@ -13,4 +13,13 @@ defmodule ScorifyElixirWeb.Auth.UserResolver do
       {:ok, %{token: jwt}}
     end
   end
+
+  def logout(_args, %{context: %{current_user: current_user, token: _}}) do
+    current_user |> Auth.set_token(nil)
+    {:ok, current_user}
+  end
+
+  def logout(_args, _) do
+    {:error, "You are not signed in"}
+  end
 end
