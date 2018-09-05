@@ -35,6 +35,9 @@ defmodule ScorifyElixir.Can do
     |> Enum.all?(fn {_, _, matcher} -> matcher.(subject, object) end)
   end
 
+  # TODO: define `can?` for general abilities, will be useful when lists
+  # are retrieved
+
   defmacro __using__(abilities_module) do
     quote do
       def can?(
