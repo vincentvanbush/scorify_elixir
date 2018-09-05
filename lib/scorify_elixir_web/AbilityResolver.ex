@@ -22,6 +22,8 @@ defmodule ScorifyElixirWeb.AbilityResolver do
             _ -> {:error, "Not authorized"}
           end
 
+        # TODO: handle case when a list is resolved
+
         {:error, _} -> resolver_result
       end
     end
