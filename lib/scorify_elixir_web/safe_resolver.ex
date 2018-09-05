@@ -29,6 +29,9 @@ defmodule ScorifyElixirWeb.SafeResolver do
         {:error, %{data: %{errors: errors}}} ->
           {:error, errors |> Kernel.inspect()}
 
+        {:error, "" <> str} ->
+          {:error, str}
+
         {:error, anything} ->
           {:error, anything |> Kernel.inspect()}
       end

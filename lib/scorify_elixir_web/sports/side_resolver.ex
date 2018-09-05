@@ -18,12 +18,8 @@ defmodule ScorifyElixirWeb.Sports.SideResolver do
     {:ok, get_side(id)}
   end
 
-  def create(sport, attrs = %{}, %{context: %{current_user: %User{}}}) do
+  def create(sport, attrs = %{}, _) do
     sport |> create_side(attrs)
-  end
-
-  def create(_, _, _) do
-    {:error, "Not authorized"}
   end
 
   def add_to_league(side, %{league_id: league_id}, _info) do
