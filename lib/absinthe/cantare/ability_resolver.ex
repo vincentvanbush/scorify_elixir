@@ -16,7 +16,7 @@ defmodule Absinthe.Cantare.AbilityResolver do
              after: after_resolve_functions
            ) do
     quote do
-      def with_abilities(fun, action)
+      def with_abilities(fun, action, target_schema \\ nil)
           when is_function(fun, 2) or (is_function(fun, 3) and is_atom(action)) do
         fn parent, args, config ->
           resolver_result =
@@ -25,27 +25,35 @@ defmodule Absinthe.Cantare.AbilityResolver do
               3 -> fun.(parent, args, config)
             end
 
-          case resolver_result do
-            {:ok, %{:__struct__ => _schema_module} = resolved_record} ->
-              s = unquote(user_schema)
+          s = unquote(user_schema)
 
-              case config do
-                %{context: %{current_user: %{__struct__: ^s} = current_user}} ->
+          case config do
+            %{context: %{current_user: %{__struct__: ^s} = current_user}} ->
+              case resolver_result do
+                {:ok, %{:__struct__ => _schema_module} = resolved_record} ->
                   case current_user |> unquote(abilities_module).can?(action, resolved_record) do
                     true -> {:ok, resolved_record}
-                    false -> {:error, "Not authorized"}
+                    false -> {:error, "Not authorized: #{action}"}
                   end
 
-                _ ->
-                  {:error, "Not authorized"}
+                {:ok, record_list} when is_list(record_list) ->
+                  case current_user |> unquote(abilities_module).can?(action, target_schema) do
+                    true ->
+                      {:ok,
+                       Enum.filter(record_list, fn elem ->
+                         current_user |> unquote(abilities_module).can?(action, elem)
+                       end)}
+
+                    false ->
+                      {:error, "Not authorized: #{action}"}
+                  end
+
+                {:error, _} ->
+                  resolver_result
               end
 
-            # TODO: handle case when a list is resolved
-            {:ok, record_list} when is_list(record_list) ->
-              {:ok, record_list}
-
-            {:error, _} ->
-              resolver_result
+            _ ->
+              {:error, "Not signed in"}
           end
         end
       end
@@ -64,9 +72,10 @@ defmodule Absinthe.Cantare.AbilityResolver do
         )
       end
 
-      def list_authorize(list_fn, ability: ability) do
+      def list_authorize(list_fn, ability: ability, schema: schema) do
         list_fn
-        |> with_abilities(ability)
+        |> with_abilities(ability, schema)
+        |> filter(ability)
       end
 
       defp insert(fun) when is_function(fun, 2) or is_function(fun, 3) do
@@ -82,6 +91,32 @@ defmodule Absinthe.Cantare.AbilityResolver do
               built_record
               |> built_record.__struct__.changeset(%{})
               |> unquote(repo_module).insert()
+
+            {:error, _} ->
+              resolver_result
+          end
+        end
+      end
+
+      defp filter(fun, ability) when is_function(fun, 2) or is_function(fun, 3) do
+        fn parent, args, config ->
+          resolver_result =
+            case :erlang.fun_info(fun)[:arity] do
+              2 -> fun.(args, config)
+              3 -> fun.(parent, args, config)
+            end
+
+          case resolver_result do
+            {:ok, resolved_list} when is_list(resolved_list) ->
+              s = unquote(user_schema)
+
+              case config do
+                %{context: %{current_user: %{__struct__: ^s} = current_user}} ->
+                  {:ok, resolved_list}
+
+                _ ->
+                  {:error, "Not authorized"}
+              end
 
             {:error, _} ->
               resolver_result

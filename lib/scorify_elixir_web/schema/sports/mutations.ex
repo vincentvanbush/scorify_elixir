@@ -1,7 +1,7 @@
 defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
   alias ScorifyElixirWeb.Sports
-  alias Absinthe.Ecto.SafeResolver
-  alias ScorifyElixirWeb.AbilityResolver
+  import Absinthe.Ecto.SafeResolver
+  import ScorifyElixirWeb.AbilityResolver
 
   @doc false
   defmacro __using__(_opts) do
@@ -13,7 +13,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
 
         middleware(&Sports.SportResolver.set_parent_sport/2)
 
-        resolve(SafeResolver.safely(&Sports.LeagueResolver.create/3))
+        resolve(safely(&Sports.LeagueResolver.create/3))
       end
 
       @desc "Create a league season"
@@ -25,7 +25,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
 
         middleware(&Sports.LeagueResolver.set_parent_league/2)
 
-        resolve(SafeResolver.safely(&Sports.LeagueSeasonResolver.create/3))
+        resolve(safely(&Sports.LeagueSeasonResolver.create/3))
       end
 
       @desc "Update a league season"
@@ -42,7 +42,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
         middleware(&Sports.SportResolver.set_parent_sport/2)
 
         resolve(
-          AbilityResolver.build_authorize_insert(
+          build_authorize_insert(
             &Sports.SideResolver.build/3,
             ability: :create
           )
@@ -57,7 +57,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
 
         middleware(&Sports.SideResolver.set_parent_side/2)
 
-        resolve(SafeResolver.safely(&Sports.SideResolver.add_to_league/3))
+        resolve(safely(&Sports.SideResolver.add_to_league/3))
       end
     end
   end

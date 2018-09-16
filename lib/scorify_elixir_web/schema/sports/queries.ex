@@ -1,7 +1,7 @@
 defmodule ScorifyElixirWeb.Schema.Sports.Queries do
   alias ScorifyElixirWeb.Sports
   import Absinthe.Ecto.SafeResolver
-  alias Absinthe.Cantare.AbilityResolver
+  import ScorifyElixirWeb.AbilityResolver
 
   @doc false
   defmacro __using__(_opts) do
@@ -12,11 +12,11 @@ defmodule ScorifyElixirWeb.Schema.Sports.Queries do
       end
 
       field :sports, list_of(:sport) do
-        # resolve(safely(&Sports.SportResolver.all/2))
         resolve(
-          AbilityResolver.list_authorize(
+          list_authorize(
             &Sports.SportResolver.all/2,
-            ability: :show
+            ability: :show,
+            schema: ScorifyElixir.Sports.Sport
           )
         )
       end
