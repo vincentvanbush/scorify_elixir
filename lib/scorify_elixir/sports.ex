@@ -108,9 +108,13 @@ defmodule ScorifyElixir.Sports do
     |> Repo.update()
   end
 
-  def create_side(sport = %Sport{}, attrs \\ %{}) do
+  def build_side(sport = %Sport{}, attrs \\ %{}) do
     sport
     |> build_assoc(:sides, attrs)
+  end
+
+  def create_side(sport = %Sport{}, attrs \\ %{}) do
+    build_side(sport, attrs)
     |> Side.changeset(%{})
     |> Repo.insert()
   end
@@ -165,7 +169,7 @@ defmodule ScorifyElixir.Sports do
   end
 
   def current_side_players(side = %Side{}) do
-    side |> get_side_players_at_given_date(Date.utc_today)
+    side |> get_side_players_at_given_date(Date.utc_today())
   end
 
   def get_side_players_at_given_date(side = %Side{}, date) do

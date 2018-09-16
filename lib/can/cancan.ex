@@ -1,9 +1,8 @@
-defmodule ScorifyElixir.Can do
-  require IEx
-
+defmodule Can.CanCan do
   @spec can(module(), atom(), module(), (%{}, %{:__meta__ => Ecto.Schema.Metadata} -> boolean())) ::
           {module(), list()}
-  def can(entity_module, action, object_module, matcher) when is_atom(entity_module) and is_function(matcher) do
+  def can(entity_module, action, object_module, matcher)
+      when is_atom(entity_module) and is_function(matcher) do
     {entity_module, [{action, object_module, matcher}]}
   end
 
@@ -45,7 +44,9 @@ defmodule ScorifyElixir.Can do
             action,
             %{:__struct__ => object_schema} = object
           ) do
-        ScorifyElixir.Can.can?(subject, action, object_schema, object, abilities: unquote(abilities_module).abilities(subject_schema))
+        Can.CanCan.can?(subject, action, object_schema, object,
+          abilities: unquote(abilities_module).abilities(subject_schema)
+        )
       end
     end
   end

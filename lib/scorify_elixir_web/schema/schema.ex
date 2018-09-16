@@ -3,6 +3,7 @@ defmodule ScorifyElixirWeb.Schema do
 
   require ScorifyElixirWeb.Schema.Auth.{Queries, Mutations}
   require ScorifyElixirWeb.Schema.Sports.{Queries, Mutations}
+  require ScorifyElixirWeb.AbilityResolver
 
   import_types(ScorifyElixirWeb.Schema.Sports.Types)
   import_types(ScorifyElixirWeb.Schema.Auth.Types)

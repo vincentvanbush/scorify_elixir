@@ -42,9 +42,10 @@ defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
         middleware(&Sports.SportResolver.set_parent_sport/2)
 
         resolve(
-          (&Sports.SideResolver.create/3)
-          |> AbilityResolver.with_abilities(:create)
-          |> SafeResolver.safely()
+          AbilityResolver.build_authorize_insert(
+            &Sports.SideResolver.build/3,
+            ability: :create
+          )
         )
       end
 
