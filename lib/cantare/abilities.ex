@@ -83,6 +83,15 @@ defmodule Cantare.Abilities do
           subject |> __MODULE__.can?(action, elem)
         end)
       end
+
+      # This is a placeholder for implementing the TODO note from above.
+      def accessible_query_filter(
+            %{:__struct__ => subject_schema} = subject,
+            %Ecto.Query{} = query,
+            action
+          ) do
+        # ...
+      end
     end
   end
 end
