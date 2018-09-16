@@ -67,6 +67,17 @@ defmodule Cantare.Abilities do
           abilities: __MODULE__.abilities(subject_schema)
         )
       end
+
+      def accessible_post_filter(
+            %{:__struct__ => subject_schema} = subject,
+            action,
+            record_list
+          )
+          when is_list(record_list) do
+        Enum.filter(record_list, fn elem ->
+          subject |> __MODULE__.can?(action, elem)
+        end)
+      end
     end
   end
 end

@@ -36,9 +36,8 @@ defmodule Absinthe.Cantare.AbilityResolver do
                   case current_user |> unquote(abilities_module).can?(action, target_schema) do
                     true ->
                       {:ok,
-                       Enum.filter(record_list, fn elem ->
-                         current_user |> unquote(abilities_module).can?(action, elem)
-                       end)}
+                       current_user
+                       |> unquote(abilities_module).accessible_post_filter(action, record_list)}
 
                     false ->
                       {:error, "Not authorized: #{action}"}
