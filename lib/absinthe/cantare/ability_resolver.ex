@@ -19,17 +19,13 @@ defmodule Absinthe.Cantare.AbilityResolver do
       def with_abilities(fun, action, target_schema \\ nil)
           when is_function(fun, 2) or (is_function(fun, 3) and is_atom(action)) do
         fn parent, args, config ->
-          resolver_result =
-            case :erlang.fun_info(fun)[:arity] do
-              2 -> fun.(args, config)
-              3 -> fun.(parent, args, config)
-            end
+          upper_result = fun |> resolver_result(parent, args, config)
 
           s = unquote(user_schema)
 
           case config do
             %{context: %{current_user: %{__struct__: ^s} = current_user}} ->
-              case resolver_result do
+              case upper_result do
                 {:ok, %{:__struct__ => _schema_module} = resolved_record} ->
                   case current_user |> unquote(abilities_module).can?(action, resolved_record) do
                     true -> {:ok, resolved_record}
@@ -49,7 +45,7 @@ defmodule Absinthe.Cantare.AbilityResolver do
                   end
 
                 {:error, _} ->
-                  resolver_result
+                  upper_result
               end
 
             _ ->
@@ -80,33 +76,25 @@ defmodule Absinthe.Cantare.AbilityResolver do
 
       defp insert(fun) when is_function(fun, 2) or is_function(fun, 3) do
         fn parent, args, config ->
-          resolver_result =
-            case :erlang.fun_info(fun)[:arity] do
-              2 -> fun.(args, config)
-              3 -> fun.(parent, args, config)
-            end
+          upper_result = fun |> resolver_result(parent, args, config)
 
-          case resolver_result do
+          case upper_result do
             {:ok, %{__meta__: %{state: :built}} = built_record} ->
               built_record
               |> built_record.__struct__.changeset(%{})
               |> unquote(repo_module).insert()
 
             {:error, _} ->
-              resolver_result
+              upper_result
           end
         end
       end
 
       defp filter(fun, ability) when is_function(fun, 2) or is_function(fun, 3) do
         fn parent, args, config ->
-          resolver_result =
-            case :erlang.fun_info(fun)[:arity] do
-              2 -> fun.(args, config)
-              3 -> fun.(parent, args, config)
-            end
+          upper_result = fun |> resolver_result(parent, args, config)
 
-          case resolver_result do
+          case upper_result do
             {:ok, resolved_list} when is_list(resolved_list) ->
               s = unquote(user_schema)
 
@@ -119,9 +107,17 @@ defmodule Absinthe.Cantare.AbilityResolver do
               end
 
             {:error, _} ->
-              resolver_result
+              upper_result
           end
         end
+      end
+
+      defp resolver_result(fun, _parent, args, config) when is_function(fun, 2) do
+        fun.(args, config)
+      end
+
+      defp resolver_result(fun, parent, args, config) when is_function(fun, 3) do
+        fun.(parent, args, config)
       end
     end
   end
