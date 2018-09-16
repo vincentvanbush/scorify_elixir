@@ -34,8 +34,16 @@ defmodule Cantare.Abilities do
     |> Enum.all?(fn {_, _, matcher} -> matcher.(subject, object) end)
   end
 
-  # TODO: define `can?` for general abilities, will be useful when lists
-  # are retrieved
+  def can?(
+        %{:__struct__ => subject_schema} = _subject,
+        action,
+        object_schema,
+        abilities: {subject_schema, [_ | _] = ability_list}
+      )
+      when is_atom(action) do
+    ability_list
+    |> Enum.any?(fn {act, sch, _} -> action == act && sch == object_schema end)
+  end
 
   defmacro __using__(_opts) do
     quote do
@@ -45,6 +53,17 @@ defmodule Cantare.Abilities do
             %{:__struct__ => object_schema} = object
           ) do
         Cantare.Abilities.can?(subject, action, object_schema, object,
+          abilities: __MODULE__.abilities(subject_schema)
+        )
+      end
+
+      def can?(
+            %{:__struct__ => subject_schema} = subject,
+            action,
+            object_schema
+          )
+          when is_atom(object_schema) do
+        Cantare.Abilities.can?(subject, action, object_schema,
           abilities: __MODULE__.abilities(subject_schema)
         )
       end
