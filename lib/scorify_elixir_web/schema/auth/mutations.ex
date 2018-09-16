@@ -1,5 +1,5 @@
 defmodule ScorifyElixirWeb.Schema.Auth.Mutations do
-  import ScorifyElixirWeb.SafeResolver
+  import Absinthe.Ecto.SafeResolver
 
   @doc false
   defmacro __using__(_opts) do
@@ -10,12 +10,12 @@ defmodule ScorifyElixirWeb.Schema.Auth.Mutations do
         arg(:email, non_null(:string))
         arg(:password, non_null(:string))
 
-        resolve safely(&ScorifyElixirWeb.Auth.UserResolver.create/2)
+        resolve(safely(&ScorifyElixirWeb.Auth.UserResolver.create/2))
       end
 
       @desc "Sign a user out"
       field :sign_out, type: :user do
-        resolve safely(&ScorifyElixirWeb.Auth.UserResolver.logout/2)
+        resolve(safely(&ScorifyElixirWeb.Auth.UserResolver.logout/2))
       end
     end
   end

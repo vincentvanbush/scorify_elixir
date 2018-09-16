@@ -1,6 +1,6 @@
 defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
   alias ScorifyElixirWeb.Sports
-  alias ScorifyElixirWeb.SafeResolver
+  alias Absinthe.Ecto.SafeResolver
   alias ScorifyElixirWeb.AbilityResolver
 
   @doc false

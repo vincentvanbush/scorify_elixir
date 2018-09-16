@@ -2,7 +2,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Types do
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: ScorifyElixir.Repo
 
-  import ScorifyElixirWeb.SafeResolver
+  import Absinthe.Ecto.SafeResolver
 
   alias ScorifyElixirWeb.Sports
 
@@ -21,7 +21,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Types do
     field(:league_seasons, list_of(:league_season), resolve: assoc(:league_seasons))
 
     field(:sides, list_of(:side)) do
-      resolve &Sports.SideResolver.all/3
+      resolve(&Sports.SideResolver.all/3)
     end
   end
 
@@ -33,7 +33,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Types do
     field(:league_seasons, list_of(:league_season), resolve: assoc(:league_seasons))
 
     field(:leagues, list_of(:league)) do
-      resolve safely &Sports.LeagueResolver.side_leagues/3
+      resolve(safely(&Sports.LeagueResolver.side_leagues/3))
     end
   end
 

@@ -1,4 +1,4 @@
-defmodule Can.CanCan do
+defmodule Cantare.Abilities do
   @spec can(module(), atom(), module(), (%{}, %{:__meta__ => Ecto.Schema.Metadata} -> boolean())) ::
           {module(), list()}
   def can(entity_module, action, object_module, matcher)
@@ -37,15 +37,15 @@ defmodule Can.CanCan do
   # TODO: define `can?` for general abilities, will be useful when lists
   # are retrieved
 
-  defmacro __using__(abilities_module) do
+  defmacro __using__(_opts) do
     quote do
       def can?(
             %{:__struct__ => subject_schema} = subject,
             action,
             %{:__struct__ => object_schema} = object
           ) do
-        Can.CanCan.can?(subject, action, object_schema, object,
-          abilities: unquote(abilities_module).abilities(subject_schema)
+        Cantare.Abilities.can?(subject, action, object_schema, object,
+          abilities: __MODULE__.abilities(subject_schema)
         )
       end
     end

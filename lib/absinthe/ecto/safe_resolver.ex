@@ -1,4 +1,4 @@
-defmodule ScorifyElixirWeb.SafeResolver do
+defmodule Absinthe.Ecto.SafeResolver do
   def safely(fun) do
     fn parent, args, config ->
       resolver_result =

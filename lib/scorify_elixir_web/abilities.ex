@@ -1,14 +1,14 @@
-defmodule ScorifyElixir.Abilities do
-  import Can.CanCan
+defmodule ScorifyElixirWeb.Abilities do
+  import Cantare.Abilities
 
   alias ScorifyElixir.Auth.User
   alias ScorifyElixir.Sports.{Side, League}
 
   # This way you can either call:
-  #   a_user |> ScorifyElixir.Abilities.can?(:create, a_record)
+  #   a_user |> ScorifyElixirWeb.Abilities.can?(:create, a_record)
   # or `use` the `Can` module with this specific ability definition module
   # in any other module, and call `can?` from the module you `use`d it in.
-  use Can.CanCan, ScorifyElixir.Abilities
+  use Cantare.Abilities
 
   @spec abilities(ScorifyElixir.Auth.User) :: {atom(), [...]}
   def abilities(User) do

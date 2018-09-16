@@ -1,6 +1,4 @@
 defmodule ScorifyElixirWeb.Schema.Auth.Queries do
-  # import ScorifyElixirWeb.SafeResolver
-
   @doc false
   defmacro __using__(_opts) do
     quote do
