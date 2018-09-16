@@ -68,6 +68,11 @@ defmodule Cantare.Abilities do
         )
       end
 
+      # TODO: This method only filters records after they've been fetched.
+      # This might sometimes be fine, but we still probably need a cancan-like
+      # mechanism that lets users specify requirements with a keyword list
+      # which is then converted into a function that can be either passed
+      # to Ecto queries or used on single objects.
       def accessible_post_filter(
             %{:__struct__ => subject_schema} = subject,
             action,
