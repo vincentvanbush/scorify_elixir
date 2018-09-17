@@ -1,26 +1,22 @@
 defmodule Cantare.Abilities do
-  @spec can(module(), atom(), module(), (%{}, %{:__meta__ => Ecto.Schema.Metadata} -> boolean())) ::
-          {module(), list()}
+  @spec can(atom() | {atom(), nonempty_maybe_improper_list()}, atom(), module(), fun()) ::
+          {atom(), nonempty_maybe_improper_list()}
   def can(entity_module, action, object_module, matcher)
-      when is_atom(entity_module) and is_function(matcher) do
+      when is_atom(action) and is_atom(object_module) and is_atom(entity_module) and
+             is_function(matcher) do
     {entity_module, [{action, object_module, matcher}]}
   end
 
-  @spec can(
-          {module(), list()},
-          atom(),
-          module(),
-          (struct(), struct() -> boolean())
-        ) :: {module(), list()}
   def can({entity_module, [_ | _] = action_matcher_list}, action, object_module, matcher)
-      when is_atom(entity_module) and is_function(matcher) do
+      when is_atom(action) and is_atom(object_module) and is_atom(entity_module) and
+             is_function(matcher) do
     {entity_module, [{action, object_module, matcher} | action_matcher_list]}
   end
 
-  @spec can?(struct(), atom(), module(), struct(), [
+  @spec can?(%{__struct__: any()}, atom(), any(), %{__struct__: any()}, [
           {:abilities, {any(), any()}},
           ...
-        ]) :: boolean
+        ]) :: boolean()
   def can?(
         %{:__struct__ => subject_schema} = subject,
         action,
@@ -56,6 +52,8 @@ defmodule Cantare.Abilities do
     end)
   end
 
+  @spec can?(%{__struct__: any()}, atom(), module(), [{:abilities, {any(), any()}}, ...]) ::
+          boolean()
   def can?(
         %{:__struct__ => subject_schema} = _subject,
         action,
