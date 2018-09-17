@@ -67,6 +67,8 @@ defmodule Cantare.Abilities do
 
   defmacro __using__(_opts) do
     quote do
+      import Ecto.Query, only: [from: 2]
+
       def can?(
             %{:__struct__ => subject_schema} = subject,
             action,
@@ -104,13 +106,36 @@ defmodule Cantare.Abilities do
         end)
       end
 
-      # This is a placeholder for implementing the TODO note from above.
-      def accessible_query_filter(
+      def accessible_query(
+            query_schema,
             %{:__struct__ => subject_schema} = subject,
+            action
+          )
+          when is_atom(query_schema) do
+        accessible_query(
+          from(query_schema, []),
+          subject,
+          action
+        )
+      end
+
+      def accessible_query(
             %Ecto.Query{} = query,
+            %{:__struct__ => subject_schema} = subject,
             action
           ) do
-        # ...
+        {_, query_schema} = query.from
+        {^subject_schema, ability_list} = __MODULE__.abilities(subject_schema)
+
+        condition_list =
+          ability_list
+          |> Enum.filter(fn {act, object_schema, matcher} ->
+            act == action && object_schema == query_schema && is_function(matcher, 1)
+          end)
+          |> Enum.map(fn {_, _, matcher} -> matcher.(subject) end)
+          |> List.flatten()
+
+        from(query, where: ^condition_list)
       end
     end
   end

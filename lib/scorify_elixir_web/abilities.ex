@@ -17,7 +17,7 @@ defmodule ScorifyElixirWeb.Abilities do
     |> can(:show, Side, fn %User{} = _user, %Side{} = _side -> true end)
     |> can(:create, Side, fn %User{} = _user, %Side{} = _side -> true end)
     # TODO: clean this up
-    |> can(:create, League, fn %User{} = user -> [name: user.email] end)
+    |> can(:create, League, fn current_user -> [name: current_user.email] end)
 
     # Proposed syntax addition:
     # |> can(:edit, League, fn %User{} = current_user -> [user_id: current_user.id] end)
