@@ -2,7 +2,7 @@ defmodule ScorifyElixirWeb.Abilities do
   import Cantare.Abilities
 
   alias ScorifyElixir.Auth.User
-  alias ScorifyElixir.Sports.{Side, Sport}
+  alias ScorifyElixir.Sports.{Side, Sport, League}
 
   # This way you can either call:
   #   a_user |> ScorifyElixirWeb.Abilities.can?(:create, a_record)
@@ -16,5 +16,10 @@ defmodule ScorifyElixirWeb.Abilities do
     |> can(:show, Sport, fn %User{} = _user, %Sport{} = _sport -> true end)
     |> can(:show, Side, fn %User{} = _user, %Side{} = _side -> true end)
     |> can(:create, Side, fn %User{} = _user, %Side{} = _side -> true end)
+    # TODO: clean this up
+    |> can(:create, League, fn %User{} = user -> [name: user.email] end)
+
+    # Proposed syntax addition:
+    # |> can(:edit, League, fn %User{} = current_user -> [user_id: current_user.id] end)
   end
 end

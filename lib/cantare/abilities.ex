@@ -20,7 +20,7 @@ defmodule Cantare.Abilities do
   @spec can?(struct(), atom(), module(), struct(), [
           {:abilities, {any(), any()}},
           ...
-        ]) :: boolean()
+        ]) :: boolean
   def can?(
         %{:__struct__ => subject_schema} = subject,
         action,
@@ -29,9 +29,31 @@ defmodule Cantare.Abilities do
         abilities: {subject_schema, [_ | _] = ability_list}
       )
       when is_atom(action) do
+    # IO.puts(Kernel.inspect(ability_list))
+
     ability_list
-    |> Enum.filter(fn {act, sch, _} -> action == act && sch == object_schema end)
-    |> Enum.all?(fn {_, _, matcher} -> matcher.(subject, object) end)
+    |> Enum.filter(fn {act, sch, _} ->
+      action == act && sch == object_schema
+    end)
+    |> Enum.all?(fn {_, _, matcher} ->
+      IO.puts(Kernel.inspect(matcher))
+
+      cond do
+        is_function(matcher, 2) ->
+          matcher.(subject, object)
+
+        is_function(matcher, 1) ->
+          condition_list = matcher.(subject)
+
+          condition_list
+          |> Enum.all?(fn {field, expected_val} ->
+            Map.get(object, field) == expected_val
+          end)
+
+        true ->
+          {:error, "wtf"}
+      end
+    end)
   end
 
   def can?(
