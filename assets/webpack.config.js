@@ -19,7 +19,8 @@ module.exports = {
             :
                 {
                     path: path.resolve(__dirname, "../priv/static/js"),
-                    publicPath: "http://localhost:8080/"
+                    // publicPath: "http://localhost:8081/"
+                    publicPath: "/js"
                 } 
     ),
     mode: env,
@@ -48,6 +49,20 @@ module.exports = {
                         : { loader: MiniCssExtractPlugin.loader, /* options: { publicPath: "../css" } */ },
                     { loader: "css-loader" },
                     { loader: "less-loader" }
+                ]
+            },
+            {
+                test: /\.(pdf|jpg|png|gif|svg|ico)$/,
+                use: [
+                    dev
+                        ? { loader: "url-loader" }
+                        : {
+                            loader: "file-loader",
+                            options: {
+                                name: "/../assets/[name]-[hash:8].[ext]"
+                                // name: "[path][name]-[hash:8].[ext]"
+                            },
+                        }
                 ]
             }
         ]
