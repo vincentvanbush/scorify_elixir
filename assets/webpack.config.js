@@ -14,7 +14,7 @@ module.exports = {
             ? 
                 {
                     path: path.resolve(__dirname, "public"),
-                    publicPath: "/js"
+                    publicPath: "/public"
                 }
             :
                 {
@@ -78,6 +78,14 @@ module.exports = {
             chunkFilename: "[id].css"
         })
     ],
+    // todo two below added temporarily; check if can be removed
+    devServer: {
+        inline: true,
+        port: 8080
+    },
+    watchOptions: {
+        poll: 1000 // Check for changes every second
+      }
     // optimization: {
     //     minimizer: [
     //         new UglifyJsPlugin({
