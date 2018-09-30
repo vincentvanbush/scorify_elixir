@@ -12,7 +12,7 @@ defmodule ScorifyElixirWeb.Endpoint do
     at: "/",
     from: :scorify_elixir,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts js assets favicon.ico robots.txt)
   )
 
   # Code reloading can be explicitly enabled under the

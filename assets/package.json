@@ -2,8 +2,8 @@
   "repository": {},
   "scripts": {
     "start": "webpack-dev-server --mode development ---open --port 8080",
-    "watch": "NODE_ENV=development webpack-dev-server",
-    "build": "NODE_ENV=development webpack --watch --mode development",
+    "watch": "NODE_ENV=development webpack-dev-server --port 8080",
+    "build": "NODE_ENV=development webpack --mode development",
     "build-prod": "NODE_ENV=production webpack --mode production",
     "test": "npm run eslint",
     "eslint": "eslint src test --ext js --ignore-pattern public"
