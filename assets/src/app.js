@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom"
-// import style from "./style.less";
+import style from "./style.less";
 import PropTypes from "prop-types";
 import mainLogo from "./assets/logo.png";
 
 function HelloMessage({ name }) {
     return (
         <div className="component">
-            Hello { name }
+            Hello 123{ name }
             <img src={ mainLogo } />
         </div>
     );

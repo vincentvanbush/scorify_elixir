@@ -19,7 +19,6 @@ module.exports = {
             :
                 {
                     path: path.resolve(__dirname, "../priv/static/js"),
-                    // publicPath: "http://localhost:8081/"
                     publicPath: "/js"
                 } 
     ),
@@ -59,8 +58,9 @@ module.exports = {
                         : {
                             loader: "file-loader",
                             options: {
-                                name: "/../assets/[name]-[hash:8].[ext]"
-                                // name: "[path][name]-[hash:8].[ext]"
+                                name: "[name]-[hash:8].[ext]",
+                                publicPath: "../assets/",
+                                outputPath: '../assets/'
                             },
                         }
                 ]
@@ -78,14 +78,6 @@ module.exports = {
             chunkFilename: "[id].css"
         })
     ],
-    // todo two below added temporarily; check if can be removed
-    devServer: {
-        inline: true,
-        port: 8080
-    },
-    watchOptions: {
-        poll: 1000 // Check for changes every second
-      }
     // optimization: {
     //     minimizer: [
     //         new UglifyJsPlugin({
