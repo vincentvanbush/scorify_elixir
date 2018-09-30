@@ -21,8 +21,3 @@ ReactDOM.render(
     <HelloMessage name="Taylor" />,
     document.getElementById("app")
 );
-
-// app.html.exx do <head> dodać  coś takiego if Mix.env == :dev żeby zaserwować style z osobnego pliku (podobnie jak na dole pliku z js)
-// docelowo na prod chcemy katalogi js css assets z odpowiednim kontentem
-// zaciągając stronkę z 4000 powininem się wyrenderować komonenent reactowy
-// plik compile stanowi instrukcję builda i deploymentu produkcyjnego z którego korzysta heroku -> musi być odpowiedni skrypt yarn/npm
