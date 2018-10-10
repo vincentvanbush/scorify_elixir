@@ -12,10 +12,12 @@ config :scorify_elixir,
 # Configures the endpoint
 config :scorify_elixir, ScorifyElixirWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "hK9u8xOEMiLsB+hxJjx8PWUYTgDt0LzXarzHIKIT1IGAkg9sZYOjpDdr3+ARUsjU",
   render_errors: [view: ScorifyElixirWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: ScorifyElixir.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: ScorifyElixir.PubSub, adapter: Phoenix.PubSub.PG2]
+
+config :scorify_elixir, ScorifyElixirWeb.Guardian,
+  issuer: "scorify_elixir",
+  secret_key: "Yn+wsevYO2zN1OZg9MpAFU3yIzHwBn4GUO8Z07so7xvNmSzwNvtPhgTpm54MHRDB"
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -24,4 +26,4 @@ config :logger, :console,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
