@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-const scorifyGraphQL = axios.create({
-  baseURL: "http://localhost:4000/graphiql",
-});
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+import Loading from "./Loading.jsx";
 
-const SPORTS = `
-    query {
+const SPORTS = gql`
+    {
         sports {
             id
             name
@@ -14,38 +13,23 @@ const SPORTS = `
     }
 `;
 
-export default class SportsPage extends Component {
-    state = {
-        sports: []
-    }
+const SportsPage = () => (
+    <Query
+        query={ SPORTS }
+    >
+        {({ loading, error, data }) => {
+            if (loading) return <Loading/>;
+            if (error) return <p>Error :(</p>;
 
-    fetchData = () => {
-        scorifyGraphQL
-            .post("", { query: SPORTS })
-            .then(response => {
-                this.setState({
-                    sports: response.data.data.sports
-                });
-            })
-    }
+            return data.sports.map((sport, ind) =>
+                <div key={ ind }>
+                    <Link to={ `/sports/${sport.id}` }>
+                        { sport.name }
+                    </Link>
+                </div>
+            )
+        }}
+    </Query>
+);
 
-    componentDidMount() {
-        this.fetchData();
-    }
-
-    render() {
-        return (
-            <div>
-                {
-                    this.state.sports.map((sport, ind) => 
-                        <div key={ ind }>
-                            <Link to={ `/sports/${sport.id}` }>
-                                { sport.name }
-                            </Link>
-                        </div>
-                    )
-                }
-            </div>
-        );
-    }
-} 
+export default SportsPage;

@@ -7,6 +7,14 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import SportsPage from "./SportsPage.jsx";
 import LeaguesPage from "./LeaguesPage.jsx";
 
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
+
+const client = new ApolloClient({
+    // If you don’t pass in uri directly, it defaults to the /graphql endpoint on the same host your app is served from
+    // uri: "http://localhost:4000/graphql"
+});
+
 const MainPage = () => (
     <div>
         <h1>Welocome in Scorify app!</h1>
@@ -42,8 +50,10 @@ class ScorifyApp extends Component {
 }
   
 ReactDOM.render(
-    <Router>
-        <ScorifyApp/>
-    </Router>,
+    <ApolloProvider client={client}>
+        <Router>
+            <ScorifyApp/>
+        </Router>
+    </ApolloProvider>,
     document.getElementById("app")
 );
