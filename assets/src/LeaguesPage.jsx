@@ -24,11 +24,18 @@ const LeaguesPage = ({ match }) => (
             if (loading) return <Loading/>;
             if (error) return `Error!: ${error}`;
 
-            return data.sport.leagues.map((league, ind) =>
-                <div key={ ind }>
-                    <Link to={ `/sports/${data.sport.id}/leagues/${league.id}` }>
-                        { league.name }
-                    </Link>
+            return (
+                <div>
+                    <h2>Leagues:</h2>
+                    {
+                        data.sport.leagues.map((league, ind) =>
+                            <div key={ ind }>
+                                <Link to={ `/sports/${data.sport.id}/leagues/${league.id}` }>
+                                    { league.name }
+                                </Link>
+                            </div>
+                        )
+                    }    
                 </div>
             );
         }}

@@ -6,6 +6,8 @@ import mainLogo from "./assets/logo.png";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import SportsPage from "./SportsPage.jsx";
 import LeaguesPage from "./LeaguesPage.jsx";
+import LeaguePage from "./LeaguePage.jsx";
+import LeagueSeasons from "./LeagueSeasons.jsx";
 
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
@@ -40,8 +42,18 @@ class ScorifyApp extends Component {
                     ></Route>
                     <Route
                         exact
-                        path="/sports/:sportId"
+                        path="/sports/:sportId/leagues"
                         component={ LeaguesPage }
+                    ></Route>
+                    <Route
+                        exact
+                        path="/sports/:sportId/leagues/:leagueId"
+                        component={ LeaguePage }
+                    ></Route>
+                    <Route
+                        exact
+                        path="/sports/:sportId/leagues/:leagueId/seasons"
+                        component={ LeagueSeasons }
                     ></Route>
                 </Switch>
             </div>
