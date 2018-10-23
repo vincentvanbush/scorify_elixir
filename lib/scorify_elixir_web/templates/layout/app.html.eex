@@ -8,17 +8,15 @@
     <meta name="author" content="">
 
     <title>Hello ScorifyElixir!</title>
+    <%= if Mix.env == :prod do %>
+      <link rel="stylesheet" type="text/css" href='<%= static_path(@conn, "/css/main.css") %>'>
+    <% end %>
   </head>
 
   <body>
     <div class="container">
       <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
+
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -30,9 +28,9 @@
 
     </div> <!-- /container -->
     <%= if Mix.env == :dev do %>
-      <script src='http://localhost:8080/app.js'></script>
+      <script src='http://localhost:8080/public/app.js'></script>
     <% else %>
-      <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+      <script src='<%= static_path(@conn, "/js/app.js") %>'></script>
     <% end %>
   </body>
 </html>

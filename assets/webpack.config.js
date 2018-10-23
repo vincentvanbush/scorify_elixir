@@ -1,122 +1,88 @@
+const path = require("path");
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const DEVELOPMENT = "development";
 
-const resolve = require('path').resolve;
+const env = process.env.NODE_ENV || DEVELOPMENT;
+const dev = env === DEVELOPMENT;
 
-var merge = require("webpack-merge");
-var webpack = require("webpack");
-
-var env = process.env.NODE_ENV || "development";
-var production = env === "production";
-
-var node_modules_dir = "./node_modules"
-
-var plugins = [
-  new MiniCssExtractPlugin(),
-  new VueLoaderPlugin()
-]
-
-if (production) {
-
-}
-else {
-  plugins.push(
-    new webpack.EvalSourceMapDevToolPlugin()
-  );
-}
-
-var common = {
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: [node_modules_dir],
-        loader: "babel-loader",
-        options: {
-          presets: ["@babel/preset-env"]
-        }
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins() {
-                return [
-                  require("precss"),
-                  require("autoprefixer")
-                ];
-              }
+module.exports = {
+    entry: "./src/app.js",
+    output: Object.assign({ filename: "app.js" },
+        dev
+            ? 
+                {
+                    path: path.resolve(__dirname, "public"),
+                    publicPath: "/public"
+                }
+            :
+                {
+                    path: path.resolve(__dirname, "../priv/static/js"),
+                    publicPath: "/js"
+                } 
+    ),
+    mode: env,
+    module: {
+        rules: [
+            {
+                test: /\.jsx|\.js$/,
+                exclude: /node_modules/,
+                loader: "babel-loader",
+                options: {
+                    presets: ["@babel/preset-env", "@babel/preset-react"]
+                }
+                // OR
+                // use: {
+                //     loader: "babel-loader",
+                //     options: {
+                //         presets: ["@babel/preset-env", "@babel/preset-react"]
+                //     }
+                // },
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    dev 
+                        ? { loader: "style-loader" }
+                        : { loader: MiniCssExtractPlugin.loader, /* options: { publicPath: "../css" } */ },
+                    { loader: "css-loader" },
+                    { loader: "less-loader" }
+                ]
+            },
+            {
+                test: /\.(pdf|jpg|png|gif|svg|ico)$/,
+                use: [
+                    dev
+                        ? { loader: "url-loader" }
+                        : {
+                            loader: "file-loader",
+                            options: {
+                                name: "[name]-[hash:8].[ext]",
+                                publicPath: "../assets/",
+                                outputPath: '../assets/'
+                            },
+                        }
+                ]
             }
-          },
-          {
-            loader: 'sass-loader'
-          }
         ]
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: `file-loader?name=/app/assets/[name].[ext]`
-      },
-      {
-        test: /\.(ttf|otf|eot|svg|woff2?)$/,
-        loader: `file-loader?name=/app/assets/[name].[ext]`
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ]
-      },
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader'
-      }
-    ]
-  },
-  plugins: plugins
-};
-
-module.exports = [
-  merge(common, {
-    devServer: {
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
-      port: 8080
     },
-    entry: [
-      __dirname + "/app/app.scss",
-      __dirname + "/app/app.js"
+    plugins: [
+    //     new webpack.DefinePlugin({
+    //         "process.env": {
+    //             NODE_ENV: JSON.stringify(env)
+    //         }
+    //     })
+        new MiniCssExtractPlugin({
+            filename: "../css/[name].css",
+            chunkFilename: "[id].css"
+        })
     ],
-    output: production
-    ? {
-      path: resolve(__dirname, "../priv/static/js"),
-      filename: "app.js",
-      publicPath: "/js"
-    }
-    : {
-      path: resolve(__dirname, 'public'),
-      filename: 'app.js',
-      publicPath: 'http://localhost:8080/'
-    },
-    resolve: {
-      modules: [
-        node_modules_dir,
-        __dirname + "/app"
-      ]
-    },
-    optimization: production
-    ? {
-      minimize: production
-    }
-    : {
-      minimize: false
-    }
-  })
-];
+    // optimization: {
+    //     minimizer: [
+    //         new UglifyJsPlugin({
+    //             test: /\.jsx$/i
+    //         })
+    //     ]
+    // }
+};
