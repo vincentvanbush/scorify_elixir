@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom"
-// import style from "./style.less";
+import style from "./style.less";
 import PropTypes from "prop-types";
 import mainLogo from "./assets/logo.png";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
