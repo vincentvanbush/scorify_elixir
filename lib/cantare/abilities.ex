@@ -25,15 +25,11 @@ defmodule Cantare.Abilities do
         abilities: {subject_schema, [_ | _] = ability_list}
       )
       when is_atom(action) do
-    # IO.puts(Kernel.inspect(ability_list))
-
     ability_list
     |> Enum.filter(fn {act, sch, _} ->
       action == act && sch == object_schema
     end)
     |> Enum.all?(fn {_, _, matcher} ->
-      IO.puts(Kernel.inspect(matcher))
-
       cond do
         is_function(matcher, 2) ->
           matcher.(subject, object)
