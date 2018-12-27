@@ -78,12 +78,19 @@ defmodule Cantare.AbilitiesTest do
       refute(squealer |> ability_module.can?(:view, napoleon))
     end
 
-    test "accessible_query/3", %{ability_module: ability_module} do
+    test "accessible_query/3 called with a query", %{ability_module: ability_module} do
       base_query = Ecto.Query.from(p in Pig)
       query = base_query |> ability_module.accessible_query(%Pig{role: "napoleon"}, :view)
 
       assert {"pigs", Pig} = query.from
       assert query |> query_equals(Ecto.Query.from(p in base_query, where: p.role == ^"napoleon"))
+    end
+
+    test "accessible_query/3 called with a schema", %{ability_module: ability_module} do
+      query = Pig |> ability_module.accessible_query(%Pig{role: "napoleon"}, :view)
+
+      assert {"pigs", Pig} = query.from
+      assert query |> query_equals(Ecto.Query.from(p in Pig, where: p.role == ^"napoleon"))
     end
   end
 
