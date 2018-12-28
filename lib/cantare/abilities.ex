@@ -61,12 +61,6 @@ defmodule Cantare.Abilities do
             end
           end
 
-          # TODO: This should check whether `expected_val` is a scalar or a keyword list.
-          # If it's a keyword list, it should look into the associations of this object.
-          #
-          # We'll need to be careful because the association might or might not be preloaded.
-          # If a given association is not preloaded, it should be preloaded at this moment.
-
           condition_list |> Enum.all?(resolve_keyword.(resolve_keyword, object))
 
         true ->
@@ -150,6 +144,9 @@ defmodule Cantare.Abilities do
           ) do
         {_, query_schema} = query.from
         {^subject_schema, ability_list} = __MODULE__.abilities(subject_schema)
+
+        # TODO: Enhance this with the ability to prepare an accessibility query for
+        # nested associations using join clauses.
 
         condition_list =
           ability_list
