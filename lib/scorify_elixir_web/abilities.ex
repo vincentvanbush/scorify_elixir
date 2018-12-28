@@ -8,7 +8,7 @@ defmodule ScorifyElixirWeb.Abilities do
   #   a_user |> ScorifyElixirWeb.Abilities.can?(:create, a_record)
   # or `use` the `Can` module with this specific ability definition module
   # in any other module, and call `can?` from the module you `use`d it in.
-  use Cantare.Abilities
+  use Cantare.Abilities, repo: ScorifyElixir.Repo
 
   @spec abilities(ScorifyElixir.Auth.User) :: {atom(), [...]}
   def abilities(User) do

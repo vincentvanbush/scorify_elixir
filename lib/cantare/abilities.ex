@@ -22,7 +22,8 @@ defmodule Cantare.Abilities do
         action,
         object_schema,
         %{:__struct__ => object_schema} = object,
-        abilities: {subject_schema, [_ | _] = ability_list}
+        abilities: {subject_schema, [_ | _] = ability_list},
+        repo: repo
       )
       when is_atom(action) do
     ability_list
@@ -37,10 +38,36 @@ defmodule Cantare.Abilities do
         is_function(matcher, 1) ->
           condition_list = matcher.(subject)
 
-          condition_list
-          |> Enum.all?(fn {field, expected_val} ->
-            Map.get(object, field) == expected_val
-          end)
+          # awkward anonymous function recursion, but there you go...
+          resolve_keyword = fn f, obj ->
+            fn {field, expected_val} ->
+              case expected_val do
+                list when is_list(expected_val) ->
+                  new_obj_ptr =
+                    case Map.get(obj, field) do
+                      %Ecto.Association.NotLoaded{} ->
+                        # preload stuff, use a repo
+                        Map.get(obj |> repo.preload(field), field)
+
+                      _ ->
+                        Map.get(obj, field)
+                    end
+
+                  Enum.all?(list, f.(f, new_obj_ptr))
+
+                _ ->
+                  Map.get(obj, field) == expected_val
+              end
+            end
+          end
+
+          # TODO: This should check whether `expected_val` is a scalar or a keyword list.
+          # If it's a keyword list, it should look into the associations of this object.
+          #
+          # We'll need to be careful because the association might or might not be preloaded.
+          # If a given association is not preloaded, it should be preloaded at this moment.
+
+          condition_list |> Enum.all?(resolve_keyword.(resolve_keyword, object))
 
         true ->
           {:error, "wtf"}
@@ -61,7 +88,7 @@ defmodule Cantare.Abilities do
     |> Enum.any?(fn {act, sch, _} -> action == act && sch == object_schema end)
   end
 
-  defmacro __using__(_opts) do
+  defmacro __using__(opts) do
     quote do
       import Ecto.Query, only: [from: 2]
 
@@ -71,7 +98,8 @@ defmodule Cantare.Abilities do
             %{:__struct__ => object_schema} = object
           ) do
         Cantare.Abilities.can?(subject, action, object_schema, object,
-          abilities: __MODULE__.abilities(subject_schema)
+          abilities: __MODULE__.abilities(subject_schema),
+          repo: unquote(opts[:repo])
         )
       end
 
