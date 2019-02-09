@@ -1,7 +1,7 @@
 defmodule ScorifyElixirWeb.AbilityResolver do
-  use Absinthe.Cantare.AbilityResolver,
+  use AbsintheCantare.AbilityResolver,
     repo: ScorifyElixir.Repo,
     abilities: ScorifyElixirWeb.Abilities,
     user_schema: ScorifyElixir.Auth.User,
-    after: [&Absinthe.Ecto.SafeResolver.safely/1]
+    after: [&AbsintheCantare.SafeResolver.safely/1]
 end

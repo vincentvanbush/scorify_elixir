@@ -1,7 +1,7 @@
-defmodule Absinthe.Cantare.AbilityResolver do
+defmodule AbsintheCantare.AbilityResolver do
   defmacro __using__(repo: repo_module, abilities: abilities_module, user_schema: user_schema) do
     quote do
-      use Absinthe.Cantare.AbilityResolver,
+      use AbsintheCantare.AbilityResolver,
         repo: unquote(repo_module),
         abilities: unquote(abilities_module),
         user_schema: unquote(user_schema),

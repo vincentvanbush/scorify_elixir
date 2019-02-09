@@ -1,6 +1,6 @@
 defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
   alias ScorifyElixirWeb.Sports
-  import Absinthe.Ecto.SafeResolver
+  import AbsintheCantare.SafeResolver
   import ScorifyElixirWeb.AbilityResolver
 
   @doc false

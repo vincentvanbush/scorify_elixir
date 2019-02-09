@@ -1,4 +1,4 @@
-defmodule Absinthe.Ecto.SafeResolver do
+defmodule AbsintheCantare.SafeResolver do
   def safely(fun) do
     fn parent, args, config ->
       resolver_result =
