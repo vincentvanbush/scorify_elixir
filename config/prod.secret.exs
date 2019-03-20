@@ -14,5 +14,10 @@ config :scorify_elixir, ScorifyElixirWeb.Endpoint,
 # Configure your database
 config :scorify_elixir, ScorifyElixir.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: System.get_env("DATABASE_URL"),
-  pool_size: 15
+  # url: System.get_env("DATABASE_URL"),
+  # pool_size: 15
+  username: "postgres",
+  password: "postgres",
+  database: "scorify_elixir_dev",
+  hostname: "localhost",
+  pool_size: 10

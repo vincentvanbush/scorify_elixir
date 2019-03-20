@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -11,6 +11,13 @@
     <%= if Mix.env == :prod do %>
       <link rel="stylesheet" type="text/css" href='<%= static_path(@conn, "/css/main.css") %>'>
     <% end %>
+    <%= if Mix.env == :prod do %>
+      <link rel="manifest" href='<%= static_path(@conn, "/./manifest.json") %>'>
+    <% end %>
+    <%= if Mix.env == :dev do %>
+      <link rel="manifest" href='http://localhost:8080/public/manifest.json'>
+    <% end %>
+
   </head>
 
   <body>
@@ -27,10 +34,10 @@
       </main>
 
     </div> <!-- /container -->
-    <%= if Mix.env == :dev do %>
-      <script src='http://localhost:8080/public/app.js'></script>
-    <% else %>
-      <script src='<%= static_path(@conn, "/js/app.js") %>'></script>
-    <% end %>
+      <%= if Mix.env == :dev do %>
+        <script src='http://localhost:8080/public/app.js'></script>
+      <% else %>
+        <script src='<%= static_path(@conn, "/js/app.js") %>'></script>
+      <% end %>
   </body>
 </html>

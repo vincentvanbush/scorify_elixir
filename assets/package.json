@@ -1,7 +1,7 @@
 {
   "repository": {},
   "scripts": {
-    "start": "webpack-dev-server --mode development ---open --port 8080",
+    "start": "webpack-dev-server --mode development --port 8080",
     "watch": "NODE_ENV=development webpack-dev-server --port 8080",
     "build": "NODE_ENV=development webpack --mode development",
     "build-prod": "NODE_ENV=production webpack --mode production",
@@ -25,6 +25,7 @@
     "babel": "^6.23.0",
     "babel-loader": "^8.0.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
     "file-loader": "^2.0.0",

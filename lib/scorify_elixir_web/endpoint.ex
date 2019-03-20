@@ -11,8 +11,8 @@ defmodule ScorifyElixirWeb.Endpoint do
     Plug.Static,
     at: "/",
     from: :scorify_elixir,
-    gzip: false,
-    only: ~w(css fonts js assets favicon.ico robots.txt)
+    gzip: true,
+    only: ~w(css fonts js images favicon.ico robots.txt manifest.json)
   )
 
   # Code reloading can be explicitly enabled under the

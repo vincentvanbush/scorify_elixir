@@ -12,6 +12,8 @@ import LeagueSeasons from "./LeagueSeasons.jsx";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
+import * as serviceWorker from './serviceWorker';
+
 const client = new ApolloClient({
     // If you don’t pass in uri directly, it defaults to the /graphql endpoint on the same host your app is served from
     // uri: "http://localhost:4000/graphql"
@@ -56,6 +58,7 @@ class ScorifyApp extends Component {
                         component={ LeagueSeasons }
                     ></Route>
                 </Switch>
+                <img src={ mainLogo }></img>
             </div>
         )
     }
@@ -69,3 +72,6 @@ ReactDOM.render(
     </ApolloProvider>,
     document.getElementById("app")
 );
+console.log("in app js");
+alert("dupa")
+serviceWorker.register();

@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const DEVELOPMENT = "development";
 
@@ -9,6 +10,10 @@ const dev = env === DEVELOPMENT;
 
 module.exports = {
     entry: "./src/app.js",
+    devServer: {
+        port: 8080,
+        // lazy: true
+    },
     output: Object.assign({ filename: "app.js" },
         dev
             ? 
@@ -45,7 +50,7 @@ module.exports = {
                 use: [
                     dev 
                         ? { loader: "style-loader" }
-                        : { loader: MiniCssExtractPlugin.loader, /* options: { publicPath: "../css" } */ },
+                        : { loader: MiniCssExtractPlugin.loader },
                     { loader: "css-loader" },
                     { loader: "less-loader" }
                 ]
@@ -59,8 +64,8 @@ module.exports = {
                             loader: "file-loader",
                             options: {
                                 name: "[name]-[hash:8].[ext]",
-                                publicPath: "../assets/",
-                                outputPath: '../assets/'
+                                publicPath: "/images/",
+                                outputPath: '../images/'
                             },
                         }
                 ]
@@ -76,7 +81,16 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "../css/[name].css",
             chunkFilename: "[id].css"
-        })
+        }),
+        dev
+            ?
+                new CopyWebpackPlugin([
+                    { from: "src/manifest.json" }
+                ])
+            :
+                new CopyWebpackPlugin([
+                    { from: "src/manifest.json", to: "../" }
+                ])
     ],
     // optimization: {
     //     minimizer: [
