@@ -1,7 +1,6 @@
 defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
   alias ScorifyElixirWeb.Sports
-  import AbsintheCantare.SafeResolver
-  import ScorifyElixirWeb.AbilityResolver
+  import ScorifyElixirWeb.SafeResolver
 
   @doc false
   defmacro __using__(_opts) do
@@ -42,10 +41,8 @@ defmodule ScorifyElixirWeb.Schema.Sports.Mutations do
         middleware(&Sports.SportResolver.set_parent_sport/2)
 
         resolve(
-          build_authorize_insert(
-            &Sports.SideResolver.build/3,
-            ability: :create
-          )
+          (&Sports.SideResolver.build/3)
+          |> ScorifyElixirWeb.AbilityResolver.authorize_and_insert(ability: :create)
         )
       end
 

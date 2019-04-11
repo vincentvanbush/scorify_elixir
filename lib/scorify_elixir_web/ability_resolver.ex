@@ -3,5 +3,5 @@ defmodule ScorifyElixirWeb.AbilityResolver do
     repo: ScorifyElixir.Repo,
     abilities: ScorifyElixirWeb.Abilities,
     user_schema: ScorifyElixir.Auth.User,
-    after: [&AbsintheCantare.SafeResolver.safely/1]
+    after: [&ScorifyElixirWeb.SafeResolver.safely/1]
 end

@@ -1,5 +1,5 @@
 defmodule ScorifyElixirWeb.Schema.Auth.Mutations do
-  import AbsintheCantare.SafeResolver
+  import ScorifyElixirWeb.SafeResolver
 
   @doc false
   defmacro __using__(_opts) do

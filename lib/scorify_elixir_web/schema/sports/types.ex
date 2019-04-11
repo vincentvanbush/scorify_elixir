@@ -2,7 +2,7 @@ defmodule ScorifyElixirWeb.Schema.Sports.Types do
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: ScorifyElixir.Repo
 
-  import AbsintheCantare.SafeResolver
+  import ScorifyElixirWeb.SafeResolver
 
   alias ScorifyElixirWeb.Sports
 

@@ -47,7 +47,8 @@ defmodule ScorifyElixir.Mixfile do
       {:guardian, "~> 1.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
-      {:cantare, git: "https://github.com/vincentvanbush/cantare"}
+      {:cantare, git: "https://github.com/vincentvanbush/cantare"},
+      {:absinthe_cantare, git: "https://github.com/vincentvanbush/absinthe_cantare"}
     ]
   end
 

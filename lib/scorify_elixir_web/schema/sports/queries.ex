@@ -1,6 +1,6 @@
 defmodule ScorifyElixirWeb.Schema.Sports.Queries do
   alias ScorifyElixirWeb.Sports.{SportResolver, LeagueResolver, SideResolver}
-  import AbsintheCantare.SafeResolver
+  import ScorifyElixirWeb.SafeResolver
   import ScorifyElixirWeb.AbilityResolver
 
   @doc false

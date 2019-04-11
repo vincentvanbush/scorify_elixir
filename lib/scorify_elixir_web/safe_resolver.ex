@@ -1,4 +1,4 @@
-defmodule AbsintheCantare.SafeResolver do
+defmodule ScorifyElixirWeb.SafeResolver do
   def safely(fun) do
     fn parent, args, config ->
       resolver_result =
